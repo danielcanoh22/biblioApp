@@ -1,4 +1,4 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { firestore } from "~/firebase/firebaseConfig";
 import type { Book } from "~/types/types";
 
@@ -11,4 +11,18 @@ export async function getBooks() {
   }));
 
   return books;
+}
+
+export async function getBookById(bookId: string) {
+  const docRef = doc(firestore, "books", bookId);
+  const docSnapshot = await getDoc(docRef);
+
+  if (docSnapshot.exists()) {
+    return {
+      id: docSnapshot.id,
+      ...(docSnapshot.data() as Omit<Book, "id">),
+    };
+  } else {
+    return null;
+  }
 }
