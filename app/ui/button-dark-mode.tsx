@@ -16,7 +16,7 @@ const getInitialTheme = () => {
     : THEMES.LIGHT;
 };
 
-export const DarkModeButton = () => {
+export const ButtonDarkMode = () => {
   const [theme, setTheme] = useState(getInitialTheme);
 
   const handleChangeTheme = () => {

@@ -5,7 +5,7 @@ type MenuButtonProps = {
   onClick: () => void;
 };
 
-export const MenuButton = ({ onClick, children }: MenuButtonProps) => {
+export const ButtonMenu = ({ onClick, children }: MenuButtonProps) => {
   return (
     <button className="cursor-pointer w-max p-1 md:hidden" onClick={onClick}>
       {children}

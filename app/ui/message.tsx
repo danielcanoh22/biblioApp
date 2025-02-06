@@ -27,7 +27,7 @@ export const Message = ({ variant, text }: MessageProps) => {
 
   return (
     <div
-      className={`${message.styles} p-3 rounded-md flex items-center gap-2 max-w-max`}
+      className={`${message.styles} p-3 rounded-md grid grid-cols-[auto_1fr] items-center gap-2 max-w-max`}
     >
       {message?.icon}
       <span>{text}</span>

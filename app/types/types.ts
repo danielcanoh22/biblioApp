@@ -5,6 +5,7 @@ export type Book = {
   title: string;
   description: string;
   author: string;
+  genre: string;
   copies: number;
   image: string;
   created_at: Timestamp;

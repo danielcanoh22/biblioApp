@@ -1,9 +1,9 @@
 import { LucideSearch } from "lucide-react";
 import React, { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
+import { Button } from "./button";
 
 export const SearchBar = () => {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [bookName, setBookName] = useState("");
 
@@ -11,7 +11,7 @@ export const SearchBar = () => {
     e.preventDefault();
 
     if (!bookName) return;
-    searchParams.set("titulo", bookName);
+    searchParams.set("q", bookName);
     setSearchParams(searchParams);
   };
 
@@ -20,10 +20,9 @@ export const SearchBar = () => {
 
     setBookName(value);
 
-    if (!value && searchParams.get("titulo")) {
-      searchParams.delete("titulo");
+    if (!value && searchParams.get("q")) {
+      searchParams.delete("q");
       setSearchParams(searchParams);
-      navigate("/libros");
     }
   };
 
@@ -36,15 +35,17 @@ export const SearchBar = () => {
             type="text"
             className="w-full focus:outline-none  px-2 py-1 text-gray-500 dark:text-gray-300 font-light tracking-wide focus:ring-2 focus:ring-indigo-200 dark:placeholder:text-gray-400"
             placeholder="Ingresa el nombre de un libro"
+            defaultValue={searchParams.get("titulo") || ""}
             onChange={handleChange}
           />
         </div>
-        <button
+        {/* <button
           className="bg-indigo-600 text-white py-2 px-4 rounded-md cursor-pointer w-max transition-colors duration-200 hover:bg-indigo-800"
           type="submit"
         >
           Buscar
-        </button>
+        </button> */}
+        <Button type="submit" text="Buscar" />
       </div>
     </form>
   );

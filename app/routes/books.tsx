@@ -4,6 +4,8 @@ import { useSearchParams } from "react-router";
 import { getBooks } from "~/services/apiBooks";
 import { SearchBar } from "~/ui/search-bar";
 import { BooksList } from "~/features/books/books-list";
+import { BooksFilter } from "~/features/books/books-filter";
+import { formatCharacteristic } from "~/utils/helpers";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -14,14 +16,39 @@ export function meta({}: Route.MetaArgs) {
 
 export async function clientLoader() {
   const books = await getBooks();
-  return { books };
+
+  const uniqueAuthors = Array.from(
+    new Set(books.map((book) => book.author))
+  ).map((author) => ({
+    label: author,
+    value: formatCharacteristic(author),
+  }));
+
+  const uniqueGenres = Array.from(new Set(books.map((book) => book.genre))).map(
+    (author) => ({
+      label: author,
+      value: formatCharacteristic(author),
+    })
+  );
+
+  const authorOptions = [
+    { label: "Seleccionar un autor", value: "" },
+    ...uniqueAuthors,
+  ];
+
+  const genreOptions = [
+    { label: "Seleccionar un género", value: "" },
+    ...uniqueGenres,
+  ];
+
+  return { books, authorOptions, genreOptions };
 }
 
 export default function Books({ loaderData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
-  const { books } = loaderData;
+  const { books, authorOptions, genreOptions } = loaderData;
 
-  const query = searchParams.get("titulo");
+  const query = searchParams.get("q");
   const filteredBooks = query
     ? books.filter((book) =>
         book.title.toLowerCase().includes(query.toLowerCase())
@@ -34,7 +61,7 @@ export default function Books({ loaderData }: Route.ComponentProps) {
         Libros disponibles
       </h1>
       <SearchBar />
-
+      <BooksFilter authors={authorOptions} genres={genreOptions} />
       <BooksList books={filteredBooks} />
     </>
   );

@@ -7,7 +7,7 @@ type BooksProps = {
 
 export const BooksList = ({ books }: BooksProps) => {
   return (
-    <section className="mt-6">
+    <section>
       <ul className="flex gap-1 flex-wrap">
         {books.map((book) => (
           <BookCard key={book.id} book={book} />

@@ -1,7 +1,6 @@
 import { LucideBook, LucideNotebookPen, LucideX } from "lucide-react";
-import { NavLink } from "react-router";
 
-import { MenuButton } from "./menu-button";
+import { ButtonMenu } from "./button-menu";
 import { MenuLink } from "./menu-link";
 
 type MenuProps = {
@@ -25,9 +24,9 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
         }`}
       >
         <div className="h-16 p-3 flex items-center md:hidden">
-          <MenuButton onClick={onClose}>
+          <ButtonMenu onClick={onClose}>
             <LucideX size={28} />
-          </MenuButton>
+          </ButtonMenu>
         </div>
 
         <div className="flex flex-col gap-2 p-3">
