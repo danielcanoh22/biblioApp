@@ -9,4 +9,6 @@ export type Book = {
   copies: number;
   image: string;
   created_at: Timestamp;
+  formattedAuthor: string;
+  formattedGenre: string;
 };

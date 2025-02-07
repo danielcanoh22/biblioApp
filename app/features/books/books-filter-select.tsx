@@ -1,5 +1,10 @@
 import { useSearchParams } from "react-router";
 
+const enum FILTERS {
+  AUTHOR = "autor",
+  GENRE = "genero",
+}
+
 type OptionType = {
   label: string;
   value: string;
@@ -28,6 +33,11 @@ export const BooksFilterSelect = ({
   return (
     <select
       className="border-b border-gray-300 text-sm p-1 cursor-pointer dark:text-gray-300"
+      defaultValue={
+        paramName === FILTERS.AUTHOR
+          ? searchParams.get(FILTERS.AUTHOR) || ""
+          : searchParams.get(FILTERS.GENRE) || ""
+      }
       onChange={handleChange}
     >
       {options.map((option) => (

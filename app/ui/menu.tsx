@@ -36,14 +36,6 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
           <MenuLink to="/prestamos" text="Prestamos">
             <LucideNotebookPen size={20} className="text-indigo-600" />
           </MenuLink>
-          {/* <NavLink to="/libros" className="flex items-center gap-2 p-2">
-            <LucideBook size={20} className="text-indigo-600" />{" "}
-            <span>Libros</span>
-          </NavLink>
-          <NavLink to="/prestamos" className="flex items-center gap-2 p-2">
-            <LucideNotebookPen size={20} className="text-indigo-600" />{" "}
-            <span>Prestamos</span>
-          </NavLink> */}
         </div>
       </nav>
     </>

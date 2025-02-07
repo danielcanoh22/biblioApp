@@ -4,20 +4,41 @@ import {
   getDoc,
   getDocs,
   orderBy,
+  Query,
   query,
+  where,
 } from "firebase/firestore";
 import { firestore } from "~/firebase/firebaseConfig";
 import type { Book } from "~/types/types";
 
-export async function getBooks() {
-  const querySnapshot = await getDocs(collection(firestore, "books"));
+export async function getBooks({
+  author,
+  genre,
+}: {
+  author?: string;
+  genre?: string;
+}) {
+  let booksQuery: Query = collection(firestore, "books");
 
-  const books = querySnapshot.docs.map((doc) => ({
+  const constraints = [];
+
+  if (author?.length) {
+    constraints.push(where("formattedAuthor", "==", author));
+  }
+  if (genre?.length) {
+    constraints.push(where("formattedGenre", "==", genre));
+  }
+
+  if (constraints.length > 0) {
+    booksQuery = query(booksQuery, ...constraints);
+  }
+
+  const querySnapshot = await getDocs(booksQuery);
+
+  return querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...(doc.data() as Omit<Book, "id">),
   }));
-
-  return books;
 }
 
 export async function getBookById(bookId: string) {

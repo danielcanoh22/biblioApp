@@ -11,7 +11,7 @@ export const SearchBar = () => {
     e.preventDefault();
 
     if (!bookName) return;
-    searchParams.set("q", bookName);
+    searchParams.set("titulo", bookName);
     setSearchParams(searchParams);
   };
 
@@ -20,8 +20,8 @@ export const SearchBar = () => {
 
     setBookName(value);
 
-    if (!value && searchParams.get("q")) {
-      searchParams.delete("q");
+    if (!value && searchParams.get("titulo")) {
+      searchParams.delete("titulo");
       setSearchParams(searchParams);
     }
   };
@@ -39,13 +39,8 @@ export const SearchBar = () => {
             onChange={handleChange}
           />
         </div>
-        {/* <button
-          className="bg-indigo-600 text-white py-2 px-4 rounded-md cursor-pointer w-max transition-colors duration-200 hover:bg-indigo-800"
-          type="submit"
-        >
-          Buscar
-        </button> */}
-        <Button type="submit" text="Buscar" />
+
+        <Button type="submit">Buscar</Button>
       </div>
     </form>
   );

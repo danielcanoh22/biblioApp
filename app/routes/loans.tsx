@@ -9,7 +9,6 @@ export async function clientLoader() {
 
 export default function Loans({ loaderData }: Route.ComponentProps) {
   const { loans } = loaderData;
-  console.log(loans);
 
   return (
     <div>

@@ -2,53 +2,33 @@ import type { Route } from "./+types/books";
 import { useSearchParams } from "react-router";
 
 import { getBooks } from "~/services/apiBooks";
+import { useFilters } from "~/features/books/hooks/useFilters";
 import { SearchBar } from "~/ui/search-bar";
 import { BooksList } from "~/features/books/books-list";
 import { BooksFilter } from "~/features/books/books-filter";
-import { formatCharacteristic } from "~/utils/helpers";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "Librería Michi, +200 libros disponibles para prestar" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
 
-export async function clientLoader() {
-  const books = await getBooks();
+export async function clientLoader({ request }: Route.ClientLoaderArgs) {
+  const url = new URL(request.url);
+  const author = url.searchParams.get("autor") || "";
+  const genre = url.searchParams.get("genero") || "";
+  const books = await getBooks({ author, genre });
 
-  const uniqueAuthors = Array.from(
-    new Set(books.map((book) => book.author))
-  ).map((author) => ({
-    label: author,
-    value: formatCharacteristic(author),
-  }));
-
-  const uniqueGenres = Array.from(new Set(books.map((book) => book.genre))).map(
-    (author) => ({
-      label: author,
-      value: formatCharacteristic(author),
-    })
-  );
-
-  const authorOptions = [
-    { label: "Seleccionar un autor", value: "" },
-    ...uniqueAuthors,
-  ];
-
-  const genreOptions = [
-    { label: "Seleccionar un género", value: "" },
-    ...uniqueGenres,
-  ];
-
-  return { books, authorOptions, genreOptions };
+  return { books };
 }
 
 export default function Books({ loaderData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
-  const { books, authorOptions, genreOptions } = loaderData;
+  const { books } = loaderData;
+  const { authorOptions, genreOptions, loaded } = useFilters();
 
-  const query = searchParams.get("q");
+  const query = searchParams.get("titulo");
   const filteredBooks = query
     ? books.filter((book) =>
         book.title.toLowerCase().includes(query.toLowerCase())
@@ -61,7 +41,7 @@ export default function Books({ loaderData }: Route.ComponentProps) {
         Libros disponibles
       </h1>
       <SearchBar />
-      <BooksFilter authors={authorOptions} genres={genreOptions} />
+      {loaded && <BooksFilter authors={authorOptions} genres={genreOptions} />}
       <BooksList books={filteredBooks} />
     </>
   );
