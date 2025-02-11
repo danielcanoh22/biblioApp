@@ -1,4 +1,11 @@
-import { LucideBook, LucideNotebookPen, LucideX } from "lucide-react";
+import {
+  BookLock,
+  BookUser,
+  LucideBook,
+  LucideNotebookPen,
+  LucideX,
+  User,
+} from "lucide-react";
 
 import { ButtonMenu } from "./button-menu";
 import { MenuLink } from "./menu-link";
@@ -35,6 +42,15 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
           </MenuLink>
           <MenuLink to="/prestamos" text="Prestamos">
             <LucideNotebookPen size={20} className="text-indigo-600" />
+          </MenuLink>
+          <MenuLink to="/admin/solicitudes" text="Solicitudes">
+            <BookUser size={20} className="text-indigo-600" />
+          </MenuLink>
+          <MenuLink to="/admin/libros" text="Gestionar Libros">
+            <BookLock size={20} className="text-indigo-600" />
+          </MenuLink>
+          <MenuLink to="/admin/usuarios" text="Gestionar Usuarios">
+            <User size={20} className="text-indigo-600" />
           </MenuLink>
         </div>
       </nav>

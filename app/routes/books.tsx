@@ -7,6 +7,7 @@ import { SearchBar } from "~/ui/search-bar";
 import { BooksList } from "~/features/books/books-list";
 import { BooksFilter } from "~/features/books/books-filter";
 import { useFilters } from "~/context/FiltersContext";
+import { PrimaryTitle } from "~/ui/titles";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -27,7 +28,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 export default function Books({ loaderData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
   const { books } = loaderData;
-  const { authorOptions, genreOptions, loaded } = useFilters();
+  const { authorOptions, genreOptions } = useFilters();
 
   const query = searchParams.get("titulo");
   const filteredBooks = query
@@ -38,9 +39,7 @@ export default function Books({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold dark:text-white mb-4">
-        Libros disponibles
-      </h1>
+      <PrimaryTitle text="Libros disponibles" />
       <SearchBar />
       <BooksFilter authors={authorOptions} genres={genreOptions} />
       <BooksList books={filteredBooks} />

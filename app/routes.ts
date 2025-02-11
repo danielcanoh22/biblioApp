@@ -19,5 +19,9 @@ export default [
       index("routes/loans.tsx"),
       route(":loanId", "routes/loan.tsx"),
     ]),
+    ...prefix("admin", [
+      // index("routes/loans.tsx"),
+      route("libros", "routes/books-management.tsx"),
+    ]),
   ]),
 ] satisfies RouteConfig;

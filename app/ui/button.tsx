@@ -18,7 +18,7 @@ export const Button = ({
   children,
 }: ButtonProps) => {
   const baseStyles =
-    "text-white py-2 px-4 rounded-md w-full cursor-pointer transition-colors duration-200";
+    "flex justify-center items-center text-white py-2 px-3 rounded-md w-full cursor-pointer transition-colors duration-200";
 
   const variantStyles = {
     primary: `${baseStyles} bg-indigo-600 hover:bg-indigo-800`,

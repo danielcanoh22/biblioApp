@@ -12,3 +12,8 @@ export type Book = {
   formattedAuthor: string;
   formattedGenre: string;
 };
+
+export type Column = {
+  key: string;
+  label: string;
+};
