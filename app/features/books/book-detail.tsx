@@ -6,12 +6,14 @@ import { Button } from "~/ui/button";
 import { Message } from "~/ui/message";
 import { ModalConfirm } from "~/ui/modal-confirm";
 import { Input } from "~/ui/input";
+import { useNavigate } from "react-router";
 
 type BookDetailProps = {
   book: Book;
 };
 
 export const BookDetail = ({ book }: BookDetailProps) => {
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isBorrowed, setIsBorrowed] = useState(false);
 
@@ -21,7 +23,9 @@ export const BookDetail = ({ book }: BookDetailProps) => {
     setIsExpanded((expanded) => !expanded);
   };
 
-  const handleBorrowBook = () => {};
+  const handleLendBook = () => {
+    navigate("prestamo");
+  };
 
   return (
     <>
@@ -83,7 +87,7 @@ export const BookDetail = ({ book }: BookDetailProps) => {
       <ModalConfirm
         isOpen={isBorrowed}
         onCancel={() => setIsBorrowed(false)}
-        onConfirm={handleBorrowBook}
+        onConfirm={handleLendBook}
       >
         <p>
           ¿Deseas prestar el libro{" "}

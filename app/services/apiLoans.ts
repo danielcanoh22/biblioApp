@@ -9,21 +9,26 @@ import {
 } from "firebase/firestore";
 import { firestore } from "~/firebase/firebaseConfig";
 
-export async function createLoan(bookId: string, userId: string) {
+export async function createLoan(
+  bookId: FormDataEntryValue,
+  userId: FormDataEntryValue,
+  username: FormDataEntryValue,
+  userEmail: FormDataEntryValue,
+  bookTitle: FormDataEntryValue
+) {
   try {
-    const bookRef = doc(firestore, "books", bookId);
-
     const loanData = {
-      bookRef,
+      bookId,
       userId,
+      username,
+      userEmail,
+      bookTitle,
       loanDate: Timestamp.now(),
-
       status: "active",
     };
 
     const loanRef = await addDoc(collection(firestore, "loans"), loanData);
 
-    console.log("Préstamo registrado con ID:", loanRef.id);
     return loanRef.id;
   } catch (error) {
     console.error("Error al registrar el préstamo:", error);
@@ -42,29 +47,29 @@ export async function getLoans() {
   return loans;
 }
 
-export async function getLoansWithBookDetails() {
-  const querySnapshot = await getDocs(collection(firestore, "loans"));
-  const loans = [];
+// export async function getLoansWithBookDetails() {
+//   const querySnapshot = await getDocs(collection(firestore, "loans"));
+//   const loans = [];
 
-  for (const docSnap of querySnapshot.docs) {
-    const loanData = docSnap.data();
+//   for (const docSnap of querySnapshot.docs) {
+//     const loanData = docSnap.data();
 
-    let bookData = null;
-    if (loanData.bookRef && loanData.bookRef instanceof DocumentReference) {
-      const bookSnap = await getDoc(loanData.bookRef);
-      bookData = bookSnap.exists() ? bookSnap.data() : null;
-    } else {
-      console.warn(
-        `Documento ${docSnap.id} en loans no tiene un bookRef válido.`
-      );
-    }
+//     let bookData = null;
+//     if (loanData.bookRef && loanData.bookRef instanceof DocumentReference) {
+//       const bookSnap = await getDoc(loanData.bookRef);
+//       bookData = bookSnap.exists() ? bookSnap.data() : null;
+//     } else {
+//       console.warn(
+//         `Documento ${docSnap.id} en loans no tiene un bookRef válido.`
+//       );
+//     }
 
-    loans.push({
-      id: docSnap.id,
-      ...loanData,
-      book: bookData,
-    });
-  }
+//     loans.push({
+//       id: docSnap.id,
+//       ...loanData,
+//       book: bookData,
+//     });
+//   }
 
-  return loans;
-}
+//   return loans;
+// }

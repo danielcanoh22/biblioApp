@@ -2,10 +2,11 @@ import type { Route } from "./+types/books";
 import { useSearchParams } from "react-router";
 
 import { getBooks } from "~/services/apiBooks";
-import { useFilters } from "~/features/books/hooks/useFilters";
+
 import { SearchBar } from "~/ui/search-bar";
 import { BooksList } from "~/features/books/books-list";
 import { BooksFilter } from "~/features/books/books-filter";
+import { useFilters } from "~/context/FiltersContext";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -41,7 +42,7 @@ export default function Books({ loaderData }: Route.ComponentProps) {
         Libros disponibles
       </h1>
       <SearchBar />
-      {loaded && <BooksFilter authors={authorOptions} genres={genreOptions} />}
+      <BooksFilter authors={authorOptions} genres={genreOptions} />
       <BooksList books={filteredBooks} />
     </>
   );

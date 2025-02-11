@@ -1,15 +1,10 @@
-import { getLoans, getLoansWithBookDetails } from "~/services/apiLoans";
-import { DotSpinner } from "~/ui/dot-spinner";
 import type { Route } from "./+types/loans";
+import { getLoans } from "~/services/apiLoans";
+import { DotSpinner } from "~/ui/dot-spinner";
 
-export async function clientLoader() {
-  const loans = await getLoansWithBookDetails();
-  return { loans };
-}
+export async function clientLoader() {}
 
 export default function Loans({ loaderData }: Route.ComponentProps) {
-  const { loans } = loaderData;
-
   return (
     <div>
       <DotSpinner />
