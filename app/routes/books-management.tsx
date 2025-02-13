@@ -1,5 +1,9 @@
 import { LucidePencil, LucideTrash } from "lucide-react";
+import { useState } from "react";
+
+import { BookForm } from "~/features/books-management/book-form";
 import { Button } from "~/ui/button";
+import { Modal } from "~/ui/modal";
 import { Table } from "~/ui/table";
 import { PrimaryTitle } from "~/ui/titles";
 
@@ -32,9 +36,20 @@ const columns = [
 ];
 
 export default function BooksManagement() {
+  const [showAddForm, setShowAddForm] = useState(false);
+
   return (
     <>
       <PrimaryTitle text="Gestionar Libros" />
+
+      <div className="w-max mb-4">
+        <Button onClick={() => setShowAddForm(true)}>+ Agregar libro</Button>
+      </div>
+
+      <Modal isOpen={showAddForm} onClose={() => setShowAddForm(false)}>
+        <h3 className="font-semibold text-center text-lg">Agregar Libro</h3>
+        <BookForm onClose={() => setShowAddForm(false)} />
+      </Modal>
 
       <Table
         columns={columns}

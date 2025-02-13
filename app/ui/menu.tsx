@@ -26,7 +26,7 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
       )}
 
       <nav
-        className={`flex flex-col gap-2 bg-white dark:bg-gray-800 dark:text-white w-3xs h-full fixed top-0 left-0 z-50 transition-transform transform md:translate-x-0 md:static md:w-auto md:shadow-md md:p-6 ${
+        className={`flex flex-col gap-2 bg-white dark:bg-gray-800 dark:text-white w-3xs h-full fixed top-0 left-0 z-50 transition-transform transform md:z-0 md:translate-x-0 md:static md:w-auto md:shadow-md md:p-6 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

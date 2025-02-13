@@ -1,12 +1,12 @@
+import { useNavigate } from "react-router";
 import { useState } from "react";
-import type { Book } from "~/types/types";
 
+import type { Book } from "~/types/types";
 import { ButtonBack } from "~/ui/button-back";
 import { Button } from "~/ui/button";
 import { Message } from "~/ui/message";
-import { ModalConfirm } from "~/ui/modal-confirm";
-import { Input } from "~/ui/input";
-import { useNavigate } from "react-router";
+import { Modal } from "~/ui/modal";
+import { ConfirmActions } from "~/ui/confirm-actions";
 
 type BookDetailProps = {
   book: Book;
@@ -80,20 +80,18 @@ export const BookDetail = ({ book }: BookDetailProps) => {
             )}
           </div>
         </div>
-
-        {/* <Input /> */}
       </div>
 
-      <ModalConfirm
-        isOpen={isBorrowed}
-        onCancel={() => setIsBorrowed(false)}
-        onConfirm={handleLendBook}
-      >
-        <p>
+      <Modal isOpen={isBorrowed} onClose={() => setIsBorrowed(false)}>
+        <p className="text-center mb-4">
           ¿Deseas prestar el libro{" "}
           <span className="font-semibold">{book.title}</span>?
         </p>
-      </ModalConfirm>
+        <ConfirmActions
+          onConfirm={handleLendBook}
+          onCancel={() => setIsBorrowed(false)}
+        />
+      </Modal>
     </>
   );
 };
