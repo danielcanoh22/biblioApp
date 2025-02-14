@@ -13,6 +13,16 @@ export type Book = {
   formattedGenre: string;
 };
 
+export type Loan = {
+  loanId: string;
+  bookId: string;
+  bookTitle: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  status: string;
+};
+
 export type Column = {
   key: string;
   label: string;

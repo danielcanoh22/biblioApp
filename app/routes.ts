@@ -15,10 +15,8 @@ export default [
       route(":bookId", "routes/book.tsx"),
       route(":bookId/prestamo", "routes/loan-form.tsx"),
     ]),
-    ...prefix("prestamos", [
-      index("routes/loans.tsx"),
-      route(":loanId", "routes/loan.tsx"),
-    ]),
+    route("prestamos", "routes/loans.tsx"),
+
     ...prefix("admin", [
       // index("routes/loans.tsx"),
       route("libros", "routes/books-management.tsx"),
