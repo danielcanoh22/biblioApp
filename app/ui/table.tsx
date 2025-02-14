@@ -12,7 +12,7 @@ type DataTableProps<T> = {
 export const Table = <T,>({ columns, data, actions }: DataTableProps<T>) => {
   return (
     <div className="overflow-x-auto shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-700 dark:text-gray-300">
+      <table className="w-full text-sm text-center rtl:text-right text-gray-700 dark:text-gray-300">
         <TableHeader columns={columns} hasActions={!!actions} />
         <tbody>
           {data.map((row, rowIndex) => (

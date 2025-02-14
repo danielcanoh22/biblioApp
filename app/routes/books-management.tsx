@@ -1,14 +1,17 @@
-import { LucidePencil, LucideTrash } from "lucide-react";
-import { useState } from "react";
+import { Timestamp } from "firebase/firestore";
+import type { Book } from "~/types/types";
 
+import { useState } from "react";
 import { BookForm } from "~/features/books-management/book-form";
 import { Button } from "~/ui/button";
 import { Modal } from "~/ui/modal";
 import { Table } from "~/ui/table";
+import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
 
 const books = [
   {
+    id: "1234abc",
     title: "Harry Potter y el Prisionero de Azkaban",
     author: "J.K. Rowling",
     description:
@@ -16,14 +19,23 @@ const books = [
 
     genre: "Literatura Fantástica",
     copies: 15,
+    image: "",
+    created_at: Timestamp.fromDate(new Date()),
+    formattedAuthor: "",
+    formattedGenre: "",
   },
   {
+    id: "5678abc",
     title: "Escrito en el Agua",
     author: "Paula Hawkins",
     description:
       "Pocos días antes de morir, Nel Abbott estuvo llamando a su hermana, pero Jules no cogió el teléfono, ignoró sus súplicas de ayuda. Ahora Nel está muerta. Dicen que saltó al río. Y Jules se ve arrastrada al pequeño pueblo de los veranos de su infancia, un lugar del que creía haber escapado, para cuidar de la adolescente que su hermana deja atrás. Pero Jules tiene miedo. Mucho miedo. Miedo al agua, miedo de sus recuerdos enterrados largo tiempo atrás, y miedo, sobre todo, de su certeza de que Nel nunca habría saltado…",
     genre: "Misterio",
     copies: 15,
+    image: "",
+    created_at: Timestamp.fromDate(new Date()),
+    formattedAuthor: "",
+    formattedGenre: "",
   },
 ];
 
@@ -54,14 +66,10 @@ export default function BooksManagement() {
       <Table
         columns={columns}
         data={books}
-        actions={() => (
+        actions={(book: Book) => (
           <>
-            <Button>
-              <LucidePencil size={15} />
-            </Button>
-            <Button variant="destructive">
-              <LucideTrash size={15} />
-            </Button>
+            <TableActionButton url={book.id}>Editar</TableActionButton>
+            <TableActionButton>Eliminar</TableActionButton>
           </>
         )}
       />

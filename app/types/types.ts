@@ -21,6 +21,7 @@ export type Loan = {
   userName: string;
   userEmail: string;
   status: string;
+  loanDate: string;
 };
 
 export type Column = {

@@ -14,7 +14,7 @@ const statusClasses: Record<string, string> = {
 
 export const LoanItem = ({ loan, onCancel }: LoanItemProps) => {
   return (
-    <li className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-none overflow-hidden">
+    <li className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-none overflow-hidden max-w-96 sm:min-w-80">
       <div className="bg-indigo-600 dark:bg-indigo-500 p-3 flex items-center justify-between">
         <h4 className="text-lg font-medium text-gray-200">{loan.bookTitle}</h4>
 

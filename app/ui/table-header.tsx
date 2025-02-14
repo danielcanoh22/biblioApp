@@ -7,7 +7,7 @@ type TableHeaderProps = {
 
 export const TableHeader = ({ columns, hasActions }: TableHeaderProps) => {
   return (
-    <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+    <thead className="text-xs text-center text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
       <tr>
         {columns.map((col) => (
           <th key={col.key} className="px-6 py-3">

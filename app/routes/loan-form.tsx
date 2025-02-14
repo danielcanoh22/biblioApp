@@ -25,7 +25,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
     data.bookTitle
   );
 
-  return redirect(`/prestamos/${loan}`);
+  return redirect("/prestamos");
 }
 
 export default function LoanForm({
@@ -45,7 +45,7 @@ export default function LoanForm({
         text="Confirma tus datos antes de realizar el préstamo."
       />
 
-      <Form method="post" className="mt-4 flex flex-col gap-4">
+      <Form method="post" className="mt-4 flex flex-col gap-4 max-w-[600px]">
         <FormRow id="name" label="Nombre">
           <Input
             id="name"

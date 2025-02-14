@@ -13,7 +13,7 @@ export default function AppLayout() {
       <div className="h-full md:grid md:grid-rows-[auto_1fr] md:overflow-y-hidden">
         <Header onOpenMenu={() => setShowMenu(true)} />
 
-        <main className="p-3 pt-20 md:overflow-y-auto md:pt-4">
+        <main className="p-3 pt-20 md:overflow-y-auto md:p-6">
           <Outlet />
         </main>
       </div>

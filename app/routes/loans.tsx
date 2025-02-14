@@ -55,8 +55,12 @@ export default function Loans() {
       <LoansList loans={loansData} onCancel={openModal} />
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <p className="mb-4">
-          ¿Deseas cancelar el préstamo del libro {selectedLoan?.bookTitle}?
+        <p className="mb-4 text-center">
+          ¿Deseas cancelar el préstamo del libro{" "}
+          <span className="font-semibold italic">
+            {selectedLoan?.bookTitle}
+          </span>
+          ?
         </p>
 
         <ConfirmActions

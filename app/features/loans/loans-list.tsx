@@ -8,7 +8,7 @@ type LoansListProps = {
 
 export const LoansList = ({ loans, onCancel }: LoansListProps) => {
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-4 flex-wrap md:flex-row">
       {loans.map((loan) => (
         <LoanItem
           key={loan.bookId}
