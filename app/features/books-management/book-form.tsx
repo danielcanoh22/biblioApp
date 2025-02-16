@@ -1,4 +1,4 @@
-import { Form } from "react-router";
+import { Form, useFetcher } from "react-router";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
@@ -8,8 +8,14 @@ type BookFormProps = {
 };
 
 export const BookForm = ({ onClose }: BookFormProps) => {
+  const fetcher = useFetcher();
+
   return (
-    <Form method="post" className="mt-4 flex flex-col gap-6 sm:w-96">
+    <fetcher.Form
+      method="post"
+      action="/admin/libros"
+      className="mt-4 flex flex-col gap-6 sm:w-96"
+    >
       <div className="flex flex-col gap-3">
         <FormRow id="title" label="Título">
           <Input id="title" placeholder="Ingresa el título del libro" />
@@ -42,6 +48,6 @@ export const BookForm = ({ onClose }: BookFormProps) => {
         onCancel={onClose}
         onConfirm={() => {}}
       />
-    </Form>
+    </fetcher.Form>
   );
 };

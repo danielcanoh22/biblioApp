@@ -8,6 +8,7 @@ import { BooksList } from "~/features/books/books-list";
 import { BooksFilter } from "~/features/books/books-filter";
 import { useFilters } from "~/context/FiltersContext";
 import { PrimaryTitle } from "~/ui/titles";
+import type { Book } from "~/types/types";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -32,7 +33,7 @@ export default function Books({ loaderData }: Route.ComponentProps) {
 
   const query = searchParams.get("titulo");
   const filteredBooks = query
-    ? books.filter((book) =>
+    ? books.filter((book: Book) =>
         book.title.toLowerCase().includes(query.toLowerCase())
       )
     : books;
