@@ -24,7 +24,19 @@ export type Loan = {
   loanDate: string;
 };
 
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  rol: string;
+};
+
 export type Column = {
   key: string;
   label: string;
 };
+
+export const enum THEMES {
+  LIGHT = "light",
+  DARK = "dark",
+}

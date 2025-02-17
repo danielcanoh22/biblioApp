@@ -11,10 +11,6 @@
 html,
 body {
   @apply dark:bg-gray-900;
-
-  /* @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  } */
 }
 
 a.active {

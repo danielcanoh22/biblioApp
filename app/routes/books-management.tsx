@@ -1,15 +1,15 @@
 import { Timestamp } from "firebase/firestore";
-import type { Book } from "~/types/types";
 
+import type { Route } from "./+types/books-management";
+import type { Book } from "~/types/types";
 import { useState } from "react";
+import { createBook } from "~/services/apiBooks";
 import { BookForm } from "~/features/books-management/book-form";
 import { Button } from "~/ui/button";
 import { Modal } from "~/ui/modal";
 import { Table } from "~/ui/table";
 import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
-import type { Route } from "./+types/books-management";
-import { createBook } from "~/services/apiBooks";
 
 const books = [
   {
@@ -52,11 +52,12 @@ const columns = [
 export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
   const newBook = {
-    author: formData.get("author"),
-    genre: formData.get("genre"),
-    title: formData.get("title"),
+    author: String(formData.get("author")),
+    genre: String(formData.get("genre")),
+    title: String(formData.get("title")),
     copies: Number(formData.get("copies")),
-    description: formData.get("description"),
+    description: String(formData.get("description")),
+    image: "",
   };
 
   const book = await createBook(newBook);
@@ -64,10 +65,8 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
   return book;
 }
 
-export default function BooksManagement({ actionData }: Route.ComponentProps) {
+export default function BooksManagement() {
   const [showAddForm, setShowAddForm] = useState(false);
-  // const { book } = actionData;
-  // console.log(book);
 
   return (
     <>

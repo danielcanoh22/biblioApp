@@ -1,12 +1,13 @@
-import { Link } from "react-router";
+import { LoginForm } from "~/features/auth/login-form";
+import { Logo } from "~/ui/logo";
+import { PrimaryTitle } from "~/ui/titles";
 
 export default function Login() {
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="mb-6">Login</h1>
-      <Link to="/libros" className="bg-indigo-600 text-white p-2 rounded-md">
-        Ingresar a la App
-      </Link>
+    <div className="flex flex-col gap-4 p-4 items-center justify-center h-screen bg-gray-50 dark:bg-gray-900 md:p-0">
+      <Logo />
+      <PrimaryTitle text="Iniciar sesión" />
+      <LoginForm />
     </div>
   );
 }

@@ -14,6 +14,7 @@ const loansData = [
     userName: "Daniel",
     userEmail: "daniel@test.com",
     status: "pendiente",
+    loanDate: new Date().toISOString(),
   },
   {
     loanId: "abcXzFG456",
@@ -23,6 +24,7 @@ const loansData = [
     userName: "Daniel",
     userEmail: "daniel@test.com",
     status: "activo",
+    loanDate: new Date().toISOString(),
   },
   {
     loanId: "abcXzFG789",
@@ -32,6 +34,7 @@ const loansData = [
     userName: "Daniel",
     userEmail: "daniel@test.com",
     status: "devuelto",
+    loanDate: new Date().toISOString(),
   },
 ];
 

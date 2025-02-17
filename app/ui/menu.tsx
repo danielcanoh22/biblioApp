@@ -10,6 +10,7 @@ import {
 
 import { ButtonMenu } from "./button-menu";
 import { MenuLink } from "./menu-link";
+import { Logo } from "./logo";
 
 type MenuProps = {
   isOpen?: boolean;
@@ -35,6 +36,10 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
           <ButtonMenu onClick={onClose}>
             <LucideX size={28} />
           </ButtonMenu>
+        </div>
+
+        <div className="flex justify-center items-center">
+          <Logo />
         </div>
 
         <div className="flex flex-col gap-2 p-3">
