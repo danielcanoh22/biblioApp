@@ -11,13 +11,17 @@ import {
 import { firestore } from "~/firebase/firebaseConfig";
 import type { Book } from "~/types/types";
 
+type GetBooksResponse =
+  | { success: true; data: Book[] }
+  | { success: false; message: string };
+
 export async function getBooks({
   author,
   genre,
 }: {
   author?: string;
   genre?: string;
-}) {
+}): Promise<GetBooksResponse> {
   let booksQuery: Query = collection(firestore, "books");
 
   const constraints = [];
@@ -34,11 +38,12 @@ export async function getBooks({
   }
 
   const querySnapshot = await getDocs(booksQuery);
-
-  return querySnapshot.docs.map((doc) => ({
+  const data = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...(doc.data() as Omit<Book, "id">),
   }));
+
+  return { success: true, data };
 }
 
 // export async function getBooks({
@@ -57,7 +62,10 @@ export async function getBooks({
 
 //     return await response.json();
 //   } catch (error) {
-//     throw error;
+//     return {
+//       success: false,
+//       message: "No se pudo obtener los libros disponibles. Intente más tarde.",
+//     };
 //   }
 // }
 
@@ -90,10 +98,14 @@ export async function createBook(
       }
     );
 
-    if (!response.ok) throw new Error("Error al crear el libro.");
+    if (!response.ok)
+      throw new Error(`Error al crear el libro: ${response.statusText}`);
 
     return await response.json();
   } catch (error) {
-    throw error;
+    return {
+      success: false,
+      message: "No se pudo crear el libro. Intente más tarde.",
+    };
   }
 }

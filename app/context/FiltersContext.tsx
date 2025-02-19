@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { getBooks } from "~/services/apiBooks";
+import type { Book } from "~/types/types";
 import { formatCharacteristic } from "~/utils/helpers";
 
 type FilterOption = {
@@ -25,6 +26,15 @@ type FiltersProviderProps = {
 
 const FiltersContext = createContext<FiltersContextType | undefined>(undefined);
 
+const getUniqueValues = <T extends keyof Book>(books: Book[], field: T) => {
+  return Array.from(new Set(books.map((book: Book) => book[field]))).map(
+    (value) => ({
+      label: value,
+      value: formatCharacteristic(String(value)),
+    })
+  );
+};
+
 export function FiltersProvider({ children }: FiltersProviderProps) {
   const [authorOptions, setAuthorOptions] = useState<FilterOption[]>([]);
   const [genreOptions, setGenreOptions] = useState<FilterOption[]>([]);
@@ -32,21 +42,14 @@ export function FiltersProvider({ children }: FiltersProviderProps) {
 
   useEffect(() => {
     async function fetchUniqueOptions() {
-      const allBooks = await getBooks({ author: "", genre: "" });
+      const result = await getBooks({ author: "", genre: "" });
 
-      const uniqueAuthors = Array.from(
-        new Set(allBooks.map((book) => book.author))
-      ).map((author) => ({
-        label: author,
-        value: formatCharacteristic(author),
-      }));
+      if (!result?.success) return;
 
-      const uniqueGenres = Array.from(
-        new Set(allBooks.map((book) => book.genre))
-      ).map((genre) => ({
-        label: genre,
-        value: formatCharacteristic(genre),
-      }));
+      const allBooks = result.data;
+
+      const uniqueAuthors = getUniqueValues(allBooks, "author");
+      const uniqueGenres = getUniqueValues(allBooks, "genre");
 
       setAuthorOptions([
         { label: "Seleccionar un autor", value: "" },

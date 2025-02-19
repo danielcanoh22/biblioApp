@@ -10,6 +10,7 @@ import { Modal } from "~/ui/modal";
 import { Table } from "~/ui/table";
 import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
+import toast from "react-hot-toast";
 
 const books = [
   {
@@ -60,9 +61,16 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
     image: "",
   };
 
-  const book = await createBook(newBook);
+  const result = await createBook(newBook);
 
-  return book;
+  if (!result || !result.success) {
+    toast.error(result.message);
+    return null;
+  }
+
+  toast.success("Libro agregado correctamente 😄");
+
+  return result;
 }
 
 export default function BooksManagement() {

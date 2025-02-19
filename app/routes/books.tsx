@@ -9,6 +9,7 @@ import { BooksFilter } from "~/features/books/books-filter";
 import { useFilters } from "~/context/FiltersContext";
 import { PrimaryTitle } from "~/ui/titles";
 import type { Book } from "~/types/types";
+import { Message } from "~/ui/message";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -21,6 +22,7 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const url = new URL(request.url);
   const author = url.searchParams.get("autor") || "";
   const genre = url.searchParams.get("genero") || "";
+
   const books = await getBooks({ author, genre });
 
   return { books };
@@ -28,15 +30,17 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
 
 export default function Books({ loaderData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
-  const { books } = loaderData;
   const { authorOptions, genreOptions } = useFilters();
+  const { books } = loaderData;
+
+  if (!books.success) return <Message variant="warning" text={books.message} />;
 
   const query = searchParams.get("titulo");
   const filteredBooks = query
-    ? books.filter((book: Book) =>
+    ? books.data.filter((book: Book) =>
         book.title.toLowerCase().includes(query.toLowerCase())
       )
-    : books;
+    : books.data;
 
   return (
     <>
