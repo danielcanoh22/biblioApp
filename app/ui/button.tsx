@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Link } from "react-router";
 
 type TypeButton = "button" | "submit" | "reset";
 
@@ -6,13 +7,14 @@ type VariantButton = "primary" | "destructive";
 
 type ButtonProps = {
   type?: TypeButton;
-  children: ReactNode;
   variant?: VariantButton;
   onClick?: () => void;
+  children: ReactNode;
 };
 
 export const Button = ({
   type = "button",
+
   variant = "primary",
   onClick,
   children,

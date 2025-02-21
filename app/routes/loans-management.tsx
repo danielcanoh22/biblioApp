@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Loan } from "~/types/types";
 import { ConfirmActions } from "~/ui/confirm-actions";
+import { Container } from "~/ui/container";
 import { Modal } from "~/ui/modal";
 import { Table } from "~/ui/table";
 import { TableActionButton } from "~/ui/table-action-button";
@@ -8,7 +9,7 @@ import { PrimaryTitle } from "~/ui/titles";
 
 const loans = [
   {
-    loanId: "loan123",
+    id: "loan123",
     bookId: "book123",
     bookTitle: "Harry Potter y el Prisionero de Azkaban",
     userId: "user123",
@@ -18,7 +19,7 @@ const loans = [
     loanDate: new Date().toLocaleDateString(),
   },
   {
-    loanId: "loan456",
+    id: "loan456",
     bookId: "book456",
     bookTitle: "Escrito en el Agua",
     userId: "user456",
@@ -52,7 +53,7 @@ export default function LoansManagement() {
   };
 
   return (
-    <>
+    <Container>
       <PrimaryTitle text="Gestionar Préstamos" />
 
       <Modal isOpen={showCheckinBook} onClose={handleCloseCheckinBook}>
@@ -84,6 +85,6 @@ export default function LoansManagement() {
           </TableActionButton>
         )}
       />
-    </>
+    </Container>
   );
 }

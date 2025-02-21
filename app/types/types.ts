@@ -13,13 +13,23 @@ export type Book = {
   formattedGenre: string;
 };
 
-export type Loan = {
-  loanId: string;
-  bookId: string;
-  bookTitle: string;
-  userId: string;
+export type Request = {
+  id: string;
+  userId?: string;
   userName: string;
   userEmail: string;
+  bookId?: string;
+  bookTitle: string;
+  requestDate: string;
+  status: string;
+};
+
+export type Loan = {
+  id: string;
+  bookTitle: string;
+  userName: string;
+  userEmail: string;
+  comments?: string;
   status: string;
   loanDate: string;
 };

@@ -11,6 +11,7 @@ import { Table } from "~/ui/table";
 import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
 import toast from "react-hot-toast";
+import { Container } from "~/ui/container";
 
 const books = [
   {
@@ -77,7 +78,7 @@ export default function BooksManagement() {
   const [showAddForm, setShowAddForm] = useState(false);
 
   return (
-    <>
+    <Container>
       <PrimaryTitle text="Gestionar Libros" />
 
       <div className="w-max mb-4">
@@ -99,6 +100,6 @@ export default function BooksManagement() {
           </>
         )}
       />
-    </>
+    </Container>
   );
 }

@@ -6,15 +6,11 @@ type LoansListProps = {
   onCancel: (loan: Loan) => void;
 };
 
-export const LoansList = ({ loans, onCancel }: LoansListProps) => {
+export const LoanList = ({ loans, onCancel }: LoansListProps) => {
   return (
     <ul className="flex flex-col gap-4 flex-wrap md:flex-row">
       {loans.map((loan) => (
-        <LoanItem
-          key={loan.bookId}
-          loan={loan}
-          onCancel={() => onCancel(loan)}
-        />
+        <LoanItem key={loan.id} loan={loan} onCancel={() => onCancel(loan)} />
       ))}
     </ul>
   );

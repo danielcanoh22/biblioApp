@@ -3,6 +3,7 @@ import type { Route } from "./+types/book";
 
 import { BookDetail } from "~/features/books/book-detail";
 import { Message } from "~/ui/message";
+import { Container } from "~/ui/container";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const book = await getBookById(params.bookId);
@@ -17,5 +18,9 @@ export default function Book({ loaderData }: Route.ComponentProps) {
       <Message variant="info" text="No se encontró el libro seleccionado." />
     );
 
-  return <BookDetail book={book} />;
+  return (
+    <Container>
+      <BookDetail book={book} />
+    </Container>
+  );
 }

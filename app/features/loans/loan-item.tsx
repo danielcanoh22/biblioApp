@@ -1,15 +1,10 @@
 import { LucideMail, LucideUser, LucideX } from "lucide-react";
 import type { Loan } from "~/types/types";
+import { BadgeStatus } from "~/ui/badge-status";
 
 type LoanItemProps = {
   loan: Loan;
   onCancel: () => void;
-};
-
-const statusClasses: Record<string, string> = {
-  pendiente: "bg-orange-200 text-orange-900",
-  activo: "bg-green-200 text-green-900",
-  devuelto: "bg-indigo-200 text-indigo-900",
 };
 
 export const LoanItem = ({ loan, onCancel }: LoanItemProps) => {
@@ -42,13 +37,7 @@ export const LoanItem = ({ loan, onCancel }: LoanItemProps) => {
           {loan.userEmail}
         </p>
 
-        <span
-          className={`capitalize text-sm py-1 px-3 w-max rounded-full font-medium ${
-            statusClasses[loan.status]
-          }`}
-        >
-          {loan.status}
-        </span>
+        <BadgeStatus status={loan.status} />
       </div>
     </li>
   );

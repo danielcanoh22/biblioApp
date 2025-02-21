@@ -7,6 +7,7 @@ import { Table } from "~/ui/table";
 import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
 import { UserForm } from "~/features/users/user-form";
+import { Container } from "~/ui/container";
 
 const users = [
   {
@@ -33,7 +34,7 @@ export default function Users() {
   const [showAddUser, setShowAddUser] = useState(false);
 
   return (
-    <>
+    <Container>
       <PrimaryTitle text="Gestionar Usuarios" />
 
       <div className="w-max mb-4">
@@ -50,11 +51,15 @@ export default function Users() {
         data={users}
         actions={(book: User) => (
           <>
-            <TableActionButton url={book.id}>Editar</TableActionButton>
-            <TableActionButton>Eliminar</TableActionButton>
+            <div>
+              <TableActionButton url={book.id}>Editar</TableActionButton>
+            </div>
+            <div>
+              <TableActionButton>Eliminar</TableActionButton>
+            </div>
           </>
         )}
       />
-    </>
+    </Container>
   );
 }

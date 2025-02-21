@@ -20,7 +20,10 @@ export default [
     route("prestamos", "routes/loans.tsx"),
 
     ...prefix("admin", [
-      route("solicitudes", "routes/requests.tsx"),
+      ...prefix("solicitudes", [
+        index("routes/requests.tsx"),
+        route(":requestId", "routes/request.tsx"),
+      ]),
       route("prestamos", "routes/loans-management.tsx"),
       route("usuarios", "routes/users.tsx"),
 

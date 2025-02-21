@@ -8,6 +8,7 @@ import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
 import { Message } from "~/ui/message";
 import { createLoan } from "~/services/apiLoans";
+import { Container } from "~/ui/container";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const book = await getBookById(params.bookId);
@@ -36,7 +37,7 @@ export default function LoanForm({
   const { book } = loaderData;
 
   return (
-    <>
+    <Container>
       <h1 className="text-2xl font-semibold dark:text-white mb-4">
         Confirmar préstamo
       </h1>
@@ -79,6 +80,6 @@ export default function LoanForm({
       </Form>
 
       {JSON.stringify(actionData)}
-    </>
+    </Container>
   );
 }

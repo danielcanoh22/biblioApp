@@ -21,7 +21,9 @@ export const TableRow = <T,>({ row, columns, actions }: TableRowProps<T>) => {
       ))}
 
       {actions && (
-        <td className="flex items-center gap-2 px-6 py-4">{actions(row)}</td>
+        <td className="flex items-center justify-center gap-2 px-6 py-4">
+          {actions(row)}
+        </td>
       )}
     </tr>
   );

@@ -10,6 +10,7 @@ import { useFilters } from "~/context/FiltersContext";
 import { PrimaryTitle } from "~/ui/titles";
 import type { Book } from "~/types/types";
 import { Message } from "~/ui/message";
+import { Container } from "~/ui/container";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -43,11 +44,11 @@ export default function Books({ loaderData }: Route.ComponentProps) {
     : books.data;
 
   return (
-    <>
+    <Container>
       <PrimaryTitle text="Libros disponibles" />
       <SearchBar />
       <BooksFilter authors={authorOptions} genres={genreOptions} />
       <BooksList books={filteredBooks} />
-    </>
+    </Container>
   );
 }
