@@ -15,13 +15,13 @@ import { Container } from "~/ui/container";
 
 const books = [
   {
-    id: "1234abc",
-    title: "Harry Potter y el Prisionero de Azkaban",
+    id: "5z3k4JArsfWTpbD2atdo",
+    titleBook: "Harry Potter y el Prisionero de Azkaban",
     author: "J.K. Rowling",
     description:
       "Tras haber cumplido 13 años, solo y lejos de sus amigos, Harry se pelea con su tía Marge, a la que convierte en globo. Mientras tanto, de la prisión de Azkaban se ha escapado un terrible villano, Sirius Black, un asesino en serie con poderes mágicos que fue cómplice de Lord Voldemort y que parece dispuesto a borrar a Harry del mapa. Y por si esto fuera poco, Harry deberá enfrentarse también a unos terribles monstruos, los dementores, seres abominables capaces de robarles la felicidad a los magos y de eliminar todo recuerdo hermoso de aquellos que se arriesgan a mirarlos. Lo que ninguno de estos malvados sabe es que Harry, con la ayuda de sus fieles amigos Ron y Hermione, es capaz de todo.",
 
-    genre: "Literatura Fantástica",
+    nameGenre: "Literatura Fantástica",
     copies: 15,
     image: "",
     created_at: Timestamp.fromDate(new Date()),
@@ -29,12 +29,12 @@ const books = [
     formattedGenre: "",
   },
   {
-    id: "5678abc",
-    title: "Escrito en el Agua",
+    id: "Cvmn7hjiG4dA36VyHSgB",
+    titleBook: "Escrito en el Agua",
     author: "Paula Hawkins",
     description:
       "Pocos días antes de morir, Nel Abbott estuvo llamando a su hermana, pero Jules no cogió el teléfono, ignoró sus súplicas de ayuda. Ahora Nel está muerta. Dicen que saltó al río. Y Jules se ve arrastrada al pequeño pueblo de los veranos de su infancia, un lugar del que creía haber escapado, para cuidar de la adolescente que su hermana deja atrás. Pero Jules tiene miedo. Mucho miedo. Miedo al agua, miedo de sus recuerdos enterrados largo tiempo atrás, y miedo, sobre todo, de su certeza de que Nel nunca habría saltado…",
-    genre: "Misterio",
+    nameGenre: "Misterio",
     copies: 15,
     image: "",
     created_at: Timestamp.fromDate(new Date()),
@@ -55,8 +55,8 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
   const newBook = {
     author: String(formData.get("author")),
-    genre: String(formData.get("genre")),
-    title: String(formData.get("title")),
+    nameGenre: String(formData.get("genre")),
+    titleBook: String(formData.get("title")),
     copies: Number(formData.get("copies")),
     description: String(formData.get("description")),
     image: "",
@@ -64,7 +64,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 
   const result = await createBook(newBook);
 
-  if (!result || !result.success) {
+  if (!result) {
     toast.error(result.message);
     return null;
   }
@@ -87,7 +87,7 @@ export default function BooksManagement() {
 
       <Modal isOpen={showAddForm} onClose={() => setShowAddForm(false)}>
         <h3 className="font-semibold text-center text-lg">Agregar Libro</h3>
-        <BookForm onClose={() => setShowAddForm(false)} />
+        <BookForm onCancel={() => setShowAddForm(false)} />
       </Modal>
 
       <Table

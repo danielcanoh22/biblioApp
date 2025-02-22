@@ -2,10 +2,10 @@ import type { Timestamp } from "firebase/firestore";
 
 export type Book = {
   id: string;
-  title: string;
+  titleBook: string;
   description: string;
   author: string;
-  genre: string;
+  nameGenre: string;
   copies: number;
   image: string;
   created_at: Timestamp;

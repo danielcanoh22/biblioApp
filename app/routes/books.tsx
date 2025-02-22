@@ -25,23 +25,25 @@ export async function clientLoader({ request }: Route.ClientLoaderArgs) {
   const genre = url.searchParams.get("genero") || "";
 
   const books = await getBooks({ author, genre });
+  console.log(books);
 
-  return { books };
+  return books;
 }
 
 export default function Books({ loaderData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
   const { authorOptions, genreOptions } = useFilters();
-  const { books } = loaderData;
 
-  if (!books.success) return <Message variant="warning" text={books.message} />;
+  const books = loaderData;
+
+  // if (!books.success) return <Message variant="warning" text={books.message} />;
 
   const query = searchParams.get("titulo");
   const filteredBooks = query
-    ? books.data.filter((book: Book) =>
-        book.title.toLowerCase().includes(query.toLowerCase())
+    ? books.filter((book: Book) =>
+        book.titleBook.toLowerCase().includes(query.toLowerCase())
       )
-    : books.data;
+    : books;
 
   return (
     <Container>
