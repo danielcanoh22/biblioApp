@@ -1,16 +1,24 @@
-import type { Timestamp } from "firebase/firestore";
-
 export type Book = {
-  id: string;
-  titleBook: string;
+  id: number;
+  title: string;
+  idTitle: number;
   description: string;
   author: string;
-  nameGenre: string;
+  authorId: number;
+  genre: string;
+  genreId: number;
   copies: number;
   image: string;
-  created_at: Timestamp;
-  formattedAuthor: string;
-  formattedGenre: string;
+  createdAt: string;
+};
+
+export type TempBook = {
+  author: string;
+  titleBook: string;
+  description: string;
+  copies: number;
+  nameGenre: string;
+  image: string;
 };
 
 export type Request = {
@@ -49,4 +57,24 @@ export type Column = {
 export const enum THEMES {
   LIGHT = "light",
   DARK = "dark",
+}
+
+//////////////////// API ////////////////////
+
+export interface BooksAPIError {
+  succeeded: boolean;
+  message: string;
+}
+export interface BooksAPIResponse {
+  data: Book[];
+  succeeded: boolean;
+  errors?: null;
+  message?: null;
+}
+
+export interface BookAPIResponse {
+  data: Book;
+  succeeded: boolean;
+  errors?: null;
+  message?: null;
 }

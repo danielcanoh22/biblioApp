@@ -1,11 +1,11 @@
 import { useFetcher } from "react-router";
-import type { Book } from "~/types/types";
+import type { TempBook } from "~/types/types";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
 
 type BookFormProps = {
-  book?: Book;
+  book?: TempBook;
   action?: string;
   onCancel: () => void;
 };
@@ -19,21 +19,22 @@ export const BookForm = ({
 }: BookFormProps) => {
   const fetcher = useFetcher();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+  //   const formData = new FormData(event.currentTarget);
 
-    const method = book ? "patch" : "post";
+  //   const method = book ? "patch" : "post";
 
-    fetcher.submit(formData, { method, action });
-  };
+  //   fetcher.submit(formData, { method, action });
+  // };
 
   return (
     <fetcher.Form
       action={action}
+      method="post"
       className="mt-4 flex flex-col gap-6 sm:w-96"
-      onSubmit={handleSubmit}
+      // onSubmit={handleSubmit}
     >
       <div className="flex flex-col gap-3">
         <FormRow id="title" label="Título">

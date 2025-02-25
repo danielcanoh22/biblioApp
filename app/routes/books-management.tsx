@@ -1,55 +1,20 @@
-import { Timestamp } from "firebase/firestore";
-
+import toast from "react-hot-toast";
 import type { Route } from "./+types/books-management";
 import type { Book } from "~/types/types";
-import { useState } from "react";
+import { allBooksLoader } from "~/utils/loaders";
 import { createBook } from "~/services/apiBooks";
+import { useState } from "react";
 import { BookForm } from "~/features/books-management/book-form";
 import { Button } from "~/ui/button";
 import { Modal } from "~/ui/modal";
 import { Table } from "~/ui/table";
 import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
-import toast from "react-hot-toast";
 import { Container } from "~/ui/container";
+import { Message } from "~/ui/message";
+import { redirect } from "react-router";
 
-const books = [
-  {
-    id: "5z3k4JArsfWTpbD2atdo",
-    titleBook: "Harry Potter y el Prisionero de Azkaban",
-    author: "J.K. Rowling",
-    description:
-      "Tras haber cumplido 13 años, solo y lejos de sus amigos, Harry se pelea con su tía Marge, a la que convierte en globo. Mientras tanto, de la prisión de Azkaban se ha escapado un terrible villano, Sirius Black, un asesino en serie con poderes mágicos que fue cómplice de Lord Voldemort y que parece dispuesto a borrar a Harry del mapa. Y por si esto fuera poco, Harry deberá enfrentarse también a unos terribles monstruos, los dementores, seres abominables capaces de robarles la felicidad a los magos y de eliminar todo recuerdo hermoso de aquellos que se arriesgan a mirarlos. Lo que ninguno de estos malvados sabe es que Harry, con la ayuda de sus fieles amigos Ron y Hermione, es capaz de todo.",
-
-    nameGenre: "Literatura Fantástica",
-    copies: 15,
-    image: "",
-    created_at: Timestamp.fromDate(new Date()),
-    formattedAuthor: "",
-    formattedGenre: "",
-  },
-  {
-    id: "Cvmn7hjiG4dA36VyHSgB",
-    titleBook: "Escrito en el Agua",
-    author: "Paula Hawkins",
-    description:
-      "Pocos días antes de morir, Nel Abbott estuvo llamando a su hermana, pero Jules no cogió el teléfono, ignoró sus súplicas de ayuda. Ahora Nel está muerta. Dicen que saltó al río. Y Jules se ve arrastrada al pequeño pueblo de los veranos de su infancia, un lugar del que creía haber escapado, para cuidar de la adolescente que su hermana deja atrás. Pero Jules tiene miedo. Mucho miedo. Miedo al agua, miedo de sus recuerdos enterrados largo tiempo atrás, y miedo, sobre todo, de su certeza de que Nel nunca habría saltado…",
-    nameGenre: "Misterio",
-    copies: 15,
-    image: "",
-    created_at: Timestamp.fromDate(new Date()),
-    formattedAuthor: "",
-    formattedGenre: "",
-  },
-];
-
-const columns = [
-  { key: "title", label: "Título" },
-  { key: "author", label: "Autor" },
-  { key: "description", label: "Descripción" },
-  { key: "genre", label: "Género" },
-  { key: "copies", label: "Copias" },
-];
+export const clientLoader = allBooksLoader;
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
@@ -59,23 +24,39 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
     titleBook: String(formData.get("title")),
     copies: Number(formData.get("copies")),
     description: String(formData.get("description")),
-    image: "",
+    image:
+      "https://http2.mlstatic.com/D_NQ_NP_818687-MLU77433974018_072024-O.webp",
   };
 
   const result = await createBook(newBook);
 
-  if (!result) {
+  if (!result?.succeeded) {
     toast.error(result.message);
     return null;
   }
 
   toast.success("Libro agregado correctamente 😄");
 
-  return result;
+  return redirect("/admin/libros");
 }
 
-export default function BooksManagement() {
+const BOOKS_TABLE_COLUMNS = [
+  { key: "title", label: "Título" },
+  { key: "author", label: "Autor" },
+  { key: "description", label: "Descripción" },
+  { key: "genre", label: "Género" },
+  { key: "copies", label: "Copias" },
+];
+
+export default function BooksManagement({ loaderData }: Route.ComponentProps) {
   const [showAddForm, setShowAddForm] = useState(false);
+
+  const result = loaderData;
+
+  if (!result.succeeded && !!result.message)
+    return <Message variant="warning" text={`ERROR: ${result.message}`} />;
+
+  const books: Book[] = "data" in result ? result.data : [];
 
   return (
     <Container>
@@ -90,16 +71,25 @@ export default function BooksManagement() {
         <BookForm onCancel={() => setShowAddForm(false)} />
       </Modal>
 
-      <Table
-        columns={columns}
-        data={books}
-        actions={(book: Book) => (
-          <>
-            <TableActionButton url={book.id}>Editar</TableActionButton>
-            <TableActionButton>Eliminar</TableActionButton>
-          </>
-        )}
-      />
+      {books.length > 0 ? (
+        <Table
+          columns={BOOKS_TABLE_COLUMNS}
+          data={books}
+          actions={(book: Book) => (
+            <>
+              <TableActionButton url={String(book.id)}>
+                Editar
+              </TableActionButton>
+              <TableActionButton>Eliminar</TableActionButton>
+            </>
+          )}
+        />
+      ) : (
+        <Message
+          variant="info"
+          text="En este momento no hay ningún libro registrado."
+        />
+      )}
     </Container>
   );
 }

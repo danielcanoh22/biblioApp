@@ -1,52 +1,9 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  orderBy,
-  Query,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { firestore } from "~/firebase/firebaseConfig";
-import type { Book } from "~/types/types";
-import { formatCharacteristic } from "~/utils/helpers";
-
-type GetBooksResponse =
-  | { success: true; data: Book[] }
-  | { success: false; message: string };
-
-// export async function getBooks({
-//   author,
-//   genre,
-// }: {
-//   author?: string;
-//   genre?: string;
-// }): Promise<GetBooksResponse> {
-//   let booksQuery: Query = collection(firestore, "books");
-
-//   const constraints = [];
-
-//   if (author?.length) {
-//     constraints.push(where("formattedAuthor", "==", author));
-//   }
-//   if (genre?.length) {
-//     constraints.push(where("formattedGenre", "==", genre));
-//   }
-
-//   if (constraints.length > 0) {
-//     booksQuery = query(booksQuery, ...constraints);
-//   }
-
-//   const querySnapshot = await getDocs(booksQuery);
-//   const data = querySnapshot.docs.map((doc) => ({
-//     id: doc.id,
-//     ...(doc.data() as Omit<Book, "id">),
-//   }));
-
-//   return { success: true, data };
-// }
+import type {
+  BookAPIResponse,
+  BooksAPIError,
+  BooksAPIResponse,
+  TempBook,
+} from "~/types/types";
 
 export async function getBooks({
   author,
@@ -54,70 +11,53 @@ export async function getBooks({
 }: {
   author?: string;
   genre?: string;
-}) {
+}): Promise<BooksAPIResponse | BooksAPIError> {
   try {
-    const response = await fetch(
+    const ENDPOINT = new URL(
       "https://localhost:7082/api/biblioApp/Books/RegisteredBooks"
     );
 
+    if (author) ENDPOINT.searchParams.append("formattedAuthor", author);
+    if (genre) ENDPOINT.searchParams.append("formattedGenre", genre);
+
+    const response = await fetch(ENDPOINT);
+
     if (!response.ok) throw new Error("No se encontró ningún libro.");
 
-    const { data } = await response.json();
+    const data: BooksAPIResponse = await response.json();
 
     return data;
   } catch (error) {
     return {
-      success: false,
+      succeeded: false,
       message: "No se pudo obtener los libros disponibles. Intente más tarde.",
     };
   }
 }
 
-export async function getBookById(bookId: string) {
-  const docRef = doc(firestore, "books", bookId);
-  const docSnapshot = await getDoc(docRef);
-
-  if (docSnapshot.exists()) {
-    return {
-      id: docSnapshot.id,
-      ...(docSnapshot.data() as Omit<Book, "id">),
-    };
-  } else {
-    return null;
-  }
-}
-
-type UpdatedBookOmitData =
-  | "id"
-  | "formattedAuthor"
-  | "formattedGenre"
-  | "created_at"
-  | "image";
-
-export async function updateBook(
-  bookId: string,
-  updatedData: Omit<Book, UpdatedBookOmitData>
-) {
+export async function getBookById(
+  id: string
+): Promise<BookAPIResponse | BooksAPIError> {
   try {
-    const docRef = doc(firestore, "books", bookId);
+    const response = await fetch(
+      `https://localhost:7082/api/biblioApp/Books/GetBookById?id=${id}`
+    );
 
-    const newData = {
-      ...updatedData,
-      formattedGenre: formatCharacteristic(updatedData.nameGenre),
-      formattedAuthor: formatCharacteristic(updatedData.author),
-    };
+    if (!response.ok) throw new Error("No se encontró ningún libro.");
 
-    console.log(newData);
+    const data: BookAPIResponse = await response.json();
 
-    await updateDoc(docRef, newData);
+    return data;
   } catch (error) {
-    console.log("Error al actualizar el libro");
+    return {
+      succeeded: false,
+      message:
+        "No se pudo obtener los datos del libro seleccionado. Intente más tarde.",
+    };
   }
 }
 
-export async function createBook(
-  book: Omit<Book, "id" | "created_at" | "formattedAuthor" | "formattedGenre">
-) {
+export async function createBook(book: TempBook) {
   try {
     const response = await fetch(
       "https://localhost:7082/api/biblioApp/Books/RegisterBook",
@@ -130,15 +70,13 @@ export async function createBook(
       }
     );
 
-    console.log(response);
-
     if (!response.ok)
       throw new Error(`Error al crear el libro: ${response.statusText}`);
 
     return await response.json();
   } catch (error) {
     return {
-      success: false,
+      succeeded: false,
       message: "No se pudo crear el libro. Intente más tarde.",
     };
   }

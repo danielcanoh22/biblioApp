@@ -1,6 +1,7 @@
 import type { Route } from "./+types/books";
 import { useSearchParams } from "react-router";
 
+import type { Book } from "~/types/types";
 import { getBooks } from "~/services/apiBooks";
 
 import { SearchBar } from "~/ui/search-bar";
@@ -8,9 +9,9 @@ import { BooksList } from "~/features/books/books-list";
 import { BooksFilter } from "~/features/books/books-filter";
 import { useFilters } from "~/context/FiltersContext";
 import { PrimaryTitle } from "~/ui/titles";
-import type { Book } from "~/types/types";
 import { Message } from "~/ui/message";
 import { Container } from "~/ui/container";
+import { allBooksLoader } from "~/utils/loaders";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -19,38 +20,53 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-  const url = new URL(request.url);
-  const author = url.searchParams.get("autor") || "";
-  const genre = url.searchParams.get("genero") || "";
-
-  const books = await getBooks({ author, genre });
-  console.log(books);
-
-  return books;
-}
+export const clientLoader = allBooksLoader;
 
 export default function Books({ loaderData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
   const { authorOptions, genreOptions } = useFilters();
 
-  const books = loaderData;
+  const result = loaderData;
 
-  // if (!books.success) return <Message variant="warning" text={books.message} />;
+  if (!result.succeeded && !!result.message)
+    return <Message variant="warning" text={`ERROR: ${result.message}`} />;
+
+  const books: Book[] = "data" in result ? result.data : [];
 
   const query = searchParams.get("titulo");
   const filteredBooks = query
     ? books.filter((book: Book) =>
-        book.titleBook.toLowerCase().includes(query.toLowerCase())
+        book.title.toLowerCase().includes(query.toLowerCase())
       )
     : books;
+
+  const totalBooks = filteredBooks.length;
+  const hasBooks =
+    totalBooks > 0 ||
+    (!totalBooks && (searchParams.get("autor") || searchParams.get("genero")));
 
   return (
     <Container>
       <PrimaryTitle text="Libros disponibles" />
-      <SearchBar />
-      <BooksFilter authors={authorOptions} genres={genreOptions} />
-      <BooksList books={filteredBooks} />
+      {hasBooks ? (
+        <>
+          <SearchBar />
+          <BooksFilter authors={authorOptions} genres={genreOptions} />
+          {totalBooks > 0 ? (
+            <BooksList books={filteredBooks} />
+          ) : (
+            <Message
+              variant="info"
+              text="No hay ningún libro que coincida con los filtros de búsqueda."
+            />
+          )}
+        </>
+      ) : (
+        <Message
+          variant="info"
+          text="En este momento no hay ningún libro registrado."
+        />
+      )}
     </Container>
   );
 }

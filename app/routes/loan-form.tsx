@@ -9,10 +9,11 @@ import { Input } from "~/ui/input";
 import { Message } from "~/ui/message";
 import { createLoan } from "~/services/apiLoans";
 import { Container } from "~/ui/container";
+import type { Book } from "~/types/types";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  const book = await getBookById(params.bookId);
-  return { book };
+  const result = await getBookById(params.bookId);
+  return result;
 }
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
@@ -34,7 +35,8 @@ export default function LoanForm({
   actionData,
 }: Route.ComponentProps) {
   const moveBack = useMoveBack();
-  const { book } = loaderData;
+  const result = loaderData;
+  const book: Book | null = "data" in result ? result.data : null;
 
   return (
     <Container>

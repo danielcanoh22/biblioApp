@@ -15,7 +15,7 @@ export const Table = <T,>({ columns, data, actions }: DataTableProps<T>) => {
       <table className="w-full text-sm text-center rtl:text-right text-gray-700 dark:text-gray-300">
         <TableHeader columns={columns} hasActions={!!actions} />
         <tbody>
-          {data.map((row, rowIndex) => (
+          {data?.map((row, rowIndex) => (
             <TableRow
               key={`${rowIndex}-${Math.random()}`}
               row={row}

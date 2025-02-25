@@ -1,16 +1,14 @@
 import { useNavigate } from "react-router";
 import type { Route } from "./+types/book-edit";
-import { getBookById, updateBook } from "~/services/apiBooks";
+import type { Book } from "~/types/types";
+import { bookLoader } from "~/utils/loaders";
 import { BookForm } from "~/features/books-management/book-form";
 import { Container } from "~/ui/container";
 import { PrimaryTitle } from "~/ui/titles";
 import { Message } from "~/ui/message";
 import { ButtonBack } from "~/ui/button-back";
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  const book = await getBookById(params.bookId);
-  return { book };
-}
+export const clientLoader = bookLoader;
 
 export async function clientAction({
   params,
@@ -25,12 +23,23 @@ export async function clientAction({
     description: String(formData.get("description")),
   };
 
-  await updateBook(params.bookId, updatedData);
+  return null;
 }
 
 export default function BookEdit({ loaderData, params }: Route.ComponentProps) {
-  const { book } = loaderData;
   const navigate = useNavigate();
+  const result = loaderData;
+
+  const book: Book | null = "data" in result ? result.data : null;
+
+  const bookToEdit = {
+    titleBook: book?.title || "",
+    nameGenre: book?.genre || "",
+    author: book?.author || "",
+    description: book?.description || "",
+    copies: book?.copies || 0,
+    image: book?.image || "",
+  };
 
   const handleCancelEdit = () => {
     navigate(-1);
@@ -42,7 +51,7 @@ export default function BookEdit({ loaderData, params }: Route.ComponentProps) {
 
       {book ? (
         <BookForm
-          book={book || undefined}
+          book={bookToEdit}
           action="/admin/libros/:bookId"
           onCancel={handleCancelEdit}
         />

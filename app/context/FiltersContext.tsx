@@ -44,12 +44,12 @@ export function FiltersProvider({ children }: FiltersProviderProps) {
     async function fetchUniqueOptions() {
       const result = await getBooks({ author: "", genre: "" });
 
-      // if (!result?.success) return;
+      if (!result.succeeded && !!result?.message) return;
 
-      const allBooks = result;
+      const allBooks = "data" in result ? result.data : [];
 
       const uniqueAuthors = getUniqueValues(allBooks, "author");
-      const uniqueGenres = getUniqueValues(allBooks, "nameGenre");
+      const uniqueGenres = getUniqueValues(allBooks, "genre");
 
       setAuthorOptions([
         { label: "Seleccionar un autor", value: "" },
