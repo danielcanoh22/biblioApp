@@ -81,3 +81,24 @@ export async function createBook(book: TempBook) {
     };
   }
 }
+
+export async function deleteBook(id: string) {
+  try {
+    const response = await fetch(
+      `https://localhost:7082/api/biblioApp/Books/DeleteBook?id=${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok)
+      throw new Error(`Error al eliminar el libro: ${response.statusText}`);
+
+    return await response.json();
+  } catch (error) {
+    return {
+      succeeded: false,
+      message: "No se pudo eliminar el libro. Intente más tarde.",
+    };
+  }
+}

@@ -25,7 +25,7 @@ export default function AppLayout() {
         <main className="p-3 pt-20 md:overflow-y-auto md:p-6">
           <Outlet />
           <Toaster
-            position="top-right"
+            position="top-center"
             reverseOrder={false}
             toastOptions={{
               className: "border border-gray-300 dark:border-gray-700",

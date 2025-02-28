@@ -4,6 +4,7 @@ import { Link } from "react-router";
 type TableActionButtonProps = {
   children: ReactNode;
   url?: string;
+  type?: "button" | "submit";
   onClick?: () => void;
 };
 
@@ -12,6 +13,7 @@ const buttonBaseStyles =
 
 export const TableActionButton = ({
   url,
+  type = "button",
   onClick,
   children,
 }: TableActionButtonProps) => {
@@ -27,6 +29,7 @@ export const TableActionButton = ({
 
   return (
     <button
+      type={type}
       className={`${buttonBaseStyles} text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-500`}
       onClick={onClick}
     >

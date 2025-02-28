@@ -29,7 +29,8 @@ export default [
 
       ...prefix("libros", [
         index("routes/books-management.tsx"),
-        route(":bookId", "routes/book-edit.tsx"),
+        route(":bookId/editar", "routes/book-edit.tsx"),
+        route(":bookId/eliminar", "routes/book-delete.tsx"),
       ]),
     ]),
   ]),

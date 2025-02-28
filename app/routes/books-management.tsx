@@ -12,7 +12,7 @@ import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
 import { Container } from "~/ui/container";
 import { Message } from "~/ui/message";
-import { redirect } from "react-router";
+import { Form, redirect } from "react-router";
 
 export const clientLoader = allBooksLoader;
 
@@ -77,10 +77,23 @@ export default function BooksManagement({ loaderData }: Route.ComponentProps) {
           data={books}
           actions={(book: Book) => (
             <>
-              <TableActionButton url={String(book.id)}>
+              <TableActionButton url={`${book.id}/editar`}>
                 Editar
               </TableActionButton>
-              <TableActionButton>Eliminar</TableActionButton>
+              <Form
+                action={`${book.id}/eliminar`}
+                method="post"
+                onSubmit={(event) => {
+                  const response = confirm(
+                    "Please confirm you want to delete this record."
+                  );
+                  if (!response) {
+                    event.preventDefault();
+                  }
+                }}
+              >
+                <TableActionButton type="submit">Eliminar</TableActionButton>
+              </Form>
             </>
           )}
         />
