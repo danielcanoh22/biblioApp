@@ -57,7 +57,7 @@ export default function LoansManagement() {
       <PrimaryTitle text="Gestionar Préstamos" />
 
       <Modal isOpen={showCheckinBook} onClose={handleCloseCheckinBook}>
-        <p className="mb-6">
+        <p className="mb-6 text-center">
           ¿Deseas registrar la devolución del libro{" "}
           <span className="font-semibold italic">
             {selectedLoan?.bookTitle}

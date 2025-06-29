@@ -14,30 +14,50 @@ import { Container } from "~/ui/container";
 import { Message } from "~/ui/message";
 import { Form, redirect } from "react-router";
 
+const DEFAULT_SELECT_OPTION = {
+  author: "Seleccionar un autor",
+  genre: "Seleccionar un género",
+};
+
 export const clientLoader = allBooksLoader;
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
+
+  const formAuthor =
+    String(formData.get("author")) || String(formData.get("author-select"));
+  const author = formAuthor === DEFAULT_SELECT_OPTION.author ? "" : formAuthor;
+
+  const formGenre =
+    String(formData.get("genre")) || String(formData.get("genre-select"));
+  const genre = formGenre === DEFAULT_SELECT_OPTION.genre ? "" : formGenre;
+
+  const copies = Number(formData.get("copies"));
+
   const newBook = {
-    author: String(formData.get("author")),
-    nameGenre: String(formData.get("genre")),
-    titleBook: String(formData.get("title")),
-    copies: Number(formData.get("copies")),
+    author,
+    genre,
+    title: String(formData.get("title")),
+    total_copies: copies,
+    available_copies: copies,
     description: String(formData.get("description")),
     image:
       "https://http2.mlstatic.com/D_NQ_NP_818687-MLU77433974018_072024-O.webp",
   };
 
+  console.log(newBook);
+
   const result = await createBook(newBook);
 
-  if (!result?.succeeded) {
-    toast.error(result.message);
-    return null;
-  }
+  // if (!result?.succeeded) {
+  //   toast.error(result.message);
+  //   return null;
+  // }
 
-  toast.success("Libro agregado correctamente 😄");
+  // toast.success("Libro agregado correctamente 😄");
 
-  return redirect("/admin/libros");
+  // return redirect("/admin/libros");
+  return null;
 }
 
 const BOOKS_TABLE_COLUMNS = [
@@ -45,7 +65,7 @@ const BOOKS_TABLE_COLUMNS = [
   { key: "author", label: "Autor" },
   { key: "description", label: "Descripción" },
   { key: "genre", label: "Género" },
-  { key: "copies", label: "Copias" },
+  { key: "available_copies", label: "Copias" },
 ];
 
 export default function BooksManagement({ loaderData }: Route.ComponentProps) {
@@ -56,7 +76,7 @@ export default function BooksManagement({ loaderData }: Route.ComponentProps) {
   if (!result.succeeded && !!result.message)
     return <Message variant="warning" text={`ERROR: ${result.message}`} />;
 
-  const books: Book[] = "data" in result ? result.data : [];
+  const books: Book[] = "data" in result ? result.data.books : [];
 
   return (
     <Container>

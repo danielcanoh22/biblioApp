@@ -31,7 +31,7 @@ export default function Books({ loaderData }: Route.ComponentProps) {
   if (!result.succeeded && !!result.message)
     return <Message variant="warning" text={`ERROR: ${result.message}`} />;
 
-  const books: Book[] = "data" in result ? result.data : [];
+  const books: Book[] = "data" in result ? result.data?.books : [];
 
   const query = searchParams.get("titulo");
   const filteredBooks = query
@@ -41,6 +41,7 @@ export default function Books({ loaderData }: Route.ComponentProps) {
     : books;
 
   const totalBooks = filteredBooks.length;
+
   const hasBooks =
     totalBooks > 0 ||
     (!totalBooks && (searchParams.get("autor") || searchParams.get("genero")));

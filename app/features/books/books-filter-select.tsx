@@ -1,17 +1,13 @@
 import { useSearchParams } from "react-router";
+import type { BookFilterOption } from "~/types/types";
 
 const enum FILTERS {
   AUTHOR = "autor",
   GENRE = "genero",
 }
 
-type OptionType = {
-  label: string;
-  value: string;
-};
-
 type BooksFilterSelectProps = {
-  options: OptionType[];
+  options: BookFilterOption[];
   paramName: string;
 };
 
@@ -44,6 +40,7 @@ export const BooksFilterSelect = ({
         <option
           key={option.value}
           value={option.value}
+          label={option.label}
           className="dark:bg-dark"
         >
           {option.label}

@@ -1,14 +1,5 @@
+import type { BooksFilterProps } from "~/types/types";
 import { BooksFilterSelect } from "./books-filter-select";
-
-type BookFilterOption = {
-  label: string;
-  value: string;
-};
-
-type BooksFilterProps = {
-  authors: BookFilterOption[];
-  genres: BookFilterOption[];
-};
 
 export const BooksFilter = ({ authors, genres }: BooksFilterProps) => {
   return (
@@ -19,11 +10,11 @@ export const BooksFilter = ({ authors, genres }: BooksFilterProps) => {
       <div className="flex flex-col gap-4 w-max text-sm sm:flex-row">
         <div className="flex items-center gap-2 w-max">
           <span>Autor:</span>
-          <BooksFilterSelect options={authors} paramName="autor" />
+          <BooksFilterSelect options={authors} paramName="autor_id" />
         </div>
         <div className="flex items-center gap-2 w-max">
           <span>Género:</span>
-          <BooksFilterSelect options={genres} paramName="genero" />
+          <BooksFilterSelect options={genres} paramName="genero_id" />
         </div>
       </div>
     </div>

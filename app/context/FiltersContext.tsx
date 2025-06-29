@@ -5,13 +5,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { getBooks } from "~/services/apiBooks";
-import type { Book } from "~/types/types";
+import { getAuthors } from "~/services/apiAuthors";
+import { getGenres } from "~/services/apiGenres";
+import type { Author } from "~/types/authors";
+import type { Genre } from "~/types/genres";
 import { formatCharacteristic } from "~/utils/helpers";
 
 type FilterOption = {
   label: string;
-  value: string;
+  value: string | number;
 };
 
 type FiltersContextType = {
@@ -26,13 +28,11 @@ type FiltersProviderProps = {
 
 const FiltersContext = createContext<FiltersContextType | undefined>(undefined);
 
-const getUniqueValues = <T extends keyof Book>(books: Book[], field: T) => {
-  return Array.from(new Set(books.map((book: Book) => book[field]))).map(
-    (value) => ({
-      label: value,
-      value: formatCharacteristic(String(value)),
-    })
-  );
+const getSelectOptions = (data: Author[] | Genre[]) => {
+  return data.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
 };
 
 export function FiltersProvider({ children }: FiltersProviderProps) {
@@ -41,29 +41,32 @@ export function FiltersProvider({ children }: FiltersProviderProps) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    async function fetchUniqueOptions() {
-      const result = await getBooks({ author: "", genre: "" });
+    async function fetchFilters() {
+      const authorsResult = await getAuthors();
+      const genresResult = await getGenres();
 
-      if (!result.succeeded && !!result?.message) return;
+      if (!authorsResult.succeeded) return;
 
-      const allBooks = "data" in result ? result.data : [];
+      const allAuthors = "data" in authorsResult ? authorsResult.data : [];
+      const allGenres = "data" in genresResult ? genresResult.data : [];
 
-      const uniqueAuthors = getUniqueValues(allBooks, "author");
-      const uniqueGenres = getUniqueValues(allBooks, "genre");
+      const authorsSelectOptions = getSelectOptions(allAuthors);
+      const genresSelectOptions = getSelectOptions(allGenres);
 
       setAuthorOptions([
         { label: "Seleccionar un autor", value: "" },
-        ...uniqueAuthors,
+        ...authorsSelectOptions,
       ]);
       setGenreOptions([
         { label: "Seleccionar un género", value: "" },
-        ...uniqueGenres,
+        ...genresSelectOptions,
       ]);
+
       setLoaded(true);
     }
 
     if (!loaded) {
-      fetchUniqueOptions();
+      fetchFilters();
     }
   }, [loaded]);
 

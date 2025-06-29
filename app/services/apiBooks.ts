@@ -1,9 +1,11 @@
 import type {
+  Book,
   BookAPIResponse,
-  BooksAPIError,
+  APIError,
   BooksAPIResponse,
-  TempBook,
 } from "~/types/types";
+
+const BASE_URL = "http://localhost:3000/books";
 
 export async function getBooks({
   author,
@@ -11,14 +13,12 @@ export async function getBooks({
 }: {
   author?: string;
   genre?: string;
-}): Promise<BooksAPIResponse | BooksAPIError> {
+}): Promise<BooksAPIResponse | APIError> {
   try {
-    const ENDPOINT = new URL(
-      "https://localhost:7082/api/biblioApp/Books/RegisteredBooks"
-    );
+    const ENDPOINT = new URL(BASE_URL);
 
-    if (author) ENDPOINT.searchParams.append("formattedAuthor", author);
-    if (genre) ENDPOINT.searchParams.append("formattedGenre", genre);
+    if (author) ENDPOINT.searchParams.append("author", author);
+    if (genre) ENDPOINT.searchParams.append("genre", genre);
 
     const response = await fetch(ENDPOINT);
 
@@ -37,11 +37,9 @@ export async function getBooks({
 
 export async function getBookById(
   id: string
-): Promise<BookAPIResponse | BooksAPIError> {
+): Promise<BookAPIResponse | APIError> {
   try {
-    const response = await fetch(
-      `https://localhost:7082/api/biblioApp/Books/GetBookById?id=${id}`
-    );
+    const response = await fetch(`${BASE_URL}/${id}`);
 
     if (!response.ok) throw new Error("No se encontró ningún libro.");
 
@@ -57,23 +55,20 @@ export async function getBookById(
   }
 }
 
-export async function createBook(book: TempBook) {
+export async function createBook(data: Book) {
   try {
-    const response = await fetch(
-      "https://localhost:7082/api/biblioApp/Books/RegisterBook",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(book),
-      }
-    );
+    const response = await fetch(BASE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok)
       throw new Error(`Error al crear el libro: ${response.statusText}`);
 
-    return await response.json();
+    return response.json();
   } catch (error) {
     return {
       succeeded: false,
@@ -82,14 +77,33 @@ export async function createBook(book: TempBook) {
   }
 }
 
+export async function updateBook(id: string, newData: Book) {
+  try {
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newData),
+    });
+
+    if (!response.ok)
+      throw new Error(`Error al actualizar el libro: ${response.statusText}`);
+
+    return await response.json();
+  } catch (error) {
+    return {
+      succeeded: false,
+      message: "No se pudo actualizar el libro. Intente más tarde.",
+    };
+  }
+}
+
 export async function deleteBook(id: string) {
   try {
-    const response = await fetch(
-      `https://localhost:7082/api/biblioApp/Books/DeleteBook?id=${id}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      method: "DELETE",
+    });
 
     if (!response.ok)
       throw new Error(`Error al eliminar el libro: ${response.statusText}`);

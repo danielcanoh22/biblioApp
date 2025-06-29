@@ -17,7 +17,7 @@ export const BookDetail = ({ book }: BookDetailProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isBorrowed, setIsBorrowed] = useState(false);
 
-  const isAvailable = book.copies > 0;
+  const isAvailable = book.available_copies > 0;
 
   const handleToggleExpand = () => {
     setIsExpanded((expanded) => !expanded);

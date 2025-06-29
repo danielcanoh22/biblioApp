@@ -1,11 +1,13 @@
 import { useFetcher } from "react-router";
-import type { TempBook } from "~/types/types";
+import type { Book } from "~/types/types";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
+import { useFilters } from "~/context/FiltersContext";
+import { Select } from "~/ui/select";
 
 type BookFormProps = {
-  book?: TempBook;
+  book?: Book;
   action?: string;
   onCancel: () => void;
 };
@@ -18,6 +20,8 @@ export const BookForm = ({
   onCancel: onClose,
 }: BookFormProps) => {
   const fetcher = useFetcher();
+
+  const { authorOptions, genreOptions } = useFilters();
 
   // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
   //   event.preventDefault();
@@ -33,29 +37,44 @@ export const BookForm = ({
     <fetcher.Form
       action={action}
       method="post"
-      className="mt-4 flex flex-col gap-6 sm:w-96"
+      className="mt-4 flex flex-col gap-6 sm:w-96 h-[75vh] overflow-y-auto"
       // onSubmit={handleSubmit}
     >
       <div className="flex flex-col gap-3">
+        <FormRow id="image" label="Imagen">
+          <Input
+            id="image"
+            placeholder="Ingresa la portada del libro"
+            defaultValue={book?.image}
+          />
+        </FormRow>
         <FormRow id="title" label="Título">
           <Input
             id="title"
             placeholder="Ingresa el título del libro"
-            defaultValue={book?.titleBook}
+            defaultValue={book?.title}
           />
         </FormRow>
         <FormRow id="author" label="Autor">
+          <Select options={authorOptions} id="author-select" />
+          <p className="text-xs text-indigo-600 dark:text-indigo-200">
+            Si es un nuevo autor, ingresa el nombre en el campo de abajo.
+          </p>
           <Input
             id="author"
-            placeholder="Ingresa el autor del libro"
+            placeholder="Ingresar un nuevo autor"
             defaultValue={book?.author}
           />
         </FormRow>
         <FormRow id="genre" label="Género">
+          <Select options={genreOptions} id="genre-select" />
+          <p className="text-xs text-indigo-600 dark:text-indigo-200">
+            Si es un nuevo género, ingresa el nombre en el campo de abajo.
+          </p>
           <Input
             id="genre"
-            placeholder="Ingresa el género del libro"
-            defaultValue={book?.nameGenre}
+            placeholder="Ingresar un nuevo género"
+            defaultValue={book?.genre}
           />
         </FormRow>
         <FormRow id="copies" label="Copias disponibles">
@@ -63,7 +82,7 @@ export const BookForm = ({
             type="number"
             id="copies"
             placeholder="Ingresa las copias disponibles"
-            defaultValue={book?.copies}
+            value={book?.available_copies}
           />
         </FormRow>
         <FormRow id="description" label="Descripción">

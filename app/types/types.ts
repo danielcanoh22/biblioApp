@@ -1,24 +1,20 @@
 export type Book = {
-  id: number;
+  id?: number;
   title: string;
-  idTitle: number;
-  description: string;
   author: string;
-  authorId: number;
   genre: string;
-  genreId: number;
-  copies: number;
+  description: string;
+  total_copies: number;
+  available_copies: number;
   image: string;
-  createdAt: string;
+  created_at?: string;
 };
 
-export type TempBook = {
-  author: string;
-  titleBook: string;
-  description: string;
-  copies: number;
-  nameGenre: string;
-  image: string;
+type Pagination = {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  limit: number;
 };
 
 export type Request = {
@@ -49,6 +45,16 @@ export type User = {
   rol: string;
 };
 
+export type BookFilterOption = {
+  label: string;
+  value: string | number;
+};
+
+export type BooksFilterProps = {
+  authors: BookFilterOption[];
+  genres: BookFilterOption[];
+};
+
 export type Column = {
   key: string;
   label: string;
@@ -61,12 +67,15 @@ export const enum THEMES {
 
 //////////////////// API ////////////////////
 
-export interface BooksAPIError {
+export interface APIError {
   succeeded: boolean;
   message: string;
 }
 export interface BooksAPIResponse {
-  data: Book[];
+  data: {
+    books: Book[];
+    pagination: Pagination;
+  };
   succeeded: boolean;
   errors?: null;
   message?: null;

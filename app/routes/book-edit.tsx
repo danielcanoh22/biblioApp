@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { redirect, useNavigate } from "react-router";
 import type { Route } from "./+types/book-edit";
 import type { Book } from "~/types/types";
 import { bookLoader } from "~/utils/loaders";
@@ -7,6 +7,8 @@ import { Container } from "~/ui/container";
 import { PrimaryTitle } from "~/ui/titles";
 import { Message } from "~/ui/message";
 import { ButtonBack } from "~/ui/button-back";
+import { updateBook } from "~/services/apiBooks";
+import toast from "react-hot-toast";
 
 export const clientLoader = bookLoader;
 
@@ -14,16 +16,29 @@ export async function clientAction({
   params,
   request,
 }: Route.ClientActionArgs) {
+  const { bookId } = params;
+
   const formData = await request.formData();
   const updatedData = {
-    titleBook: String(formData.get("title")),
+    id: Number(bookId),
+    title: String(formData.get("title")),
     author: String(formData.get("author")),
-    nameGenre: String(formData.get("genre")),
-    copies: Number(formData.get("copies")),
+    genre: String(formData.get("genre")),
+    available_copies: Number(formData.get("copies")),
     description: String(formData.get("description")),
+    image: String(formData.get("image")),
   };
 
-  return null;
+  const result = await updateBook(params.bookId, updatedData);
+
+  if (!result?.succeeded) {
+    toast.error(result.message);
+    return null;
+  }
+
+  toast.success("Libro actualizado correctamente 😄");
+
+  return redirect("/admin/libros");
 }
 
 export default function BookEdit({ loaderData, params }: Route.ComponentProps) {
@@ -32,12 +47,15 @@ export default function BookEdit({ loaderData, params }: Route.ComponentProps) {
 
   const book: Book | null = "data" in result ? result.data : null;
 
+  console.log(book);
+
   const bookToEdit = {
-    titleBook: book?.title || "",
-    nameGenre: book?.genre || "",
+    id: book?.id || 0,
+    title: book?.title || "",
+    genre: book?.genre || "",
     author: book?.author || "",
     description: book?.description || "",
-    copies: book?.copies || 0,
+    available_copies: book?.available_copies || 0,
     image: book?.image || "",
   };
 
@@ -52,7 +70,7 @@ export default function BookEdit({ loaderData, params }: Route.ComponentProps) {
       {book ? (
         <BookForm
           book={bookToEdit}
-          action="/admin/libros/:bookId"
+          action={`/admin/libros/${book?.id}/editar`}
           onCancel={handleCancelEdit}
         />
       ) : (
