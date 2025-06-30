@@ -5,7 +5,6 @@ export type Genre = {
 
 export interface GenresAPIResponse {
   data: Genre[];
-  succeeded: boolean;
-  errors?: null;
+  succeeded: true;
   message?: null;
 }

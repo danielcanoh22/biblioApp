@@ -10,7 +10,7 @@ export type Book = {
   created_at?: string;
 };
 
-type Pagination = {
+export type Pagination = {
   currentPage: number;
   totalPages: number;
   totalItems: number;
@@ -46,8 +46,8 @@ export type User = {
 };
 
 export type BookFilterOption = {
-  label: string;
-  value: string | number;
+  name: string;
+  id: string | number;
 };
 
 export type BooksFilterProps = {
@@ -68,7 +68,7 @@ export const enum THEMES {
 //////////////////// API ////////////////////
 
 export interface APIError {
-  succeeded: boolean;
+  succeeded: false;
   message: string;
 }
 export interface BooksAPIResponse {

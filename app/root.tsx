@@ -1,3 +1,6 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import {
   isRouteErrorResponse,
   Links,
@@ -10,7 +13,6 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { DotSpinner } from "./ui/dot-spinner";
-import { FiltersProvider } from "./context/FiltersContext";
 import { DarkModeProvider } from "./context/DarkModeContext";
 
 export const links: Route.LinksFunction = () => [
@@ -25,6 +27,8 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+
+const queryClient = new QueryClient();
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -47,11 +51,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <DarkModeProvider>
-      <FiltersProvider>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <DarkModeProvider>
         <Outlet />
-      </FiltersProvider>
-    </DarkModeProvider>
+      </DarkModeProvider>
+    </QueryClientProvider>
   );
 }
 

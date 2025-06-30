@@ -13,8 +13,8 @@ export const Select = ({ options, id }: SelectProps) => {
       className="border border-gray-300  w-full p-2 rounded-md cursor-pointer text-gray-600 dark:text-gray-300 text-md focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:ring-offset-2"
     >
       {options.map((option) => (
-        <option key={option.value} value={option.label} className="bg-gray-700">
-          {option.label}
+        <option key={option.id} value={option.id} className="bg-gray-700">
+          {option.name}
         </option>
       ))}
     </select>

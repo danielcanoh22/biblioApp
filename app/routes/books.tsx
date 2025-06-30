@@ -7,11 +7,18 @@ import { getBooks } from "~/services/apiBooks";
 import { SearchBar } from "~/ui/search-bar";
 import { BooksList } from "~/features/books/books-list";
 import { BooksFilter } from "~/features/books/books-filter";
-import { useFilters } from "~/context/FiltersContext";
 import { PrimaryTitle } from "~/ui/titles";
 import { Message } from "~/ui/message";
 import { Container } from "~/ui/container";
 import { allBooksLoader } from "~/utils/loaders";
+import { PaginationControls } from "~/ui/pagination-controls";
+
+const DEFAULT_PAGINATION = {
+  currentPage: 1,
+  totalPages: 1,
+  totalItems: 1,
+  limit: 1,
+};
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -24,7 +31,6 @@ export const clientLoader = allBooksLoader;
 
 export default function Books({ loaderData }: Route.ComponentProps) {
   const [searchParams] = useSearchParams();
-  const { authorOptions, genreOptions } = useFilters();
 
   const result = loaderData;
 
@@ -32,6 +38,8 @@ export default function Books({ loaderData }: Route.ComponentProps) {
     return <Message variant="warning" text={`ERROR: ${result.message}`} />;
 
   const books: Book[] = "data" in result ? result.data?.books : [];
+  const pagination =
+    "data" in result ? result.data.pagination : DEFAULT_PAGINATION;
 
   const query = searchParams.get("titulo");
   const filteredBooks = query
@@ -52,9 +60,14 @@ export default function Books({ loaderData }: Route.ComponentProps) {
       {hasBooks ? (
         <>
           <SearchBar />
-          <BooksFilter authors={authorOptions} genres={genreOptions} />
+          <BooksFilter />
           {totalBooks > 0 ? (
-            <BooksList books={filteredBooks} />
+            <>
+              <BooksList books={filteredBooks} />
+              <div className="w-max justify-self-end">
+                <PaginationControls pagination={pagination} />
+              </div>
+            </>
           ) : (
             <Message
               variant="info"

@@ -3,8 +3,11 @@ import type { Book } from "~/types/types";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
-import { useFilters } from "~/context/FiltersContext";
 import { Select } from "~/ui/select";
+import { useAuthors } from "../books/hooks/useAuthors";
+import { useGenres } from "../books/hooks/useGenres";
+import { useState } from "react";
+import { FormSkeleton } from "~/ui/form-skeleton";
 
 type BookFormProps = {
   book?: Book;
@@ -21,7 +24,19 @@ export const BookForm = ({
 }: BookFormProps) => {
   const fetcher = useFetcher();
 
-  const { authorOptions, genreOptions } = useFilters();
+  const {
+    authors,
+    isPending: isPendingAuthors,
+    isError: isErrorAuthors,
+  } = useAuthors();
+  const {
+    genres,
+    isPending: isPendingGenres,
+    isError: isErrorGenres,
+  } = useGenres();
+
+  const [isNewAuthor, setIsNewAuthor] = useState(false);
+  const [isNewGenre, setIsNewGenre] = useState(false);
 
   // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
   //   event.preventDefault();
@@ -32,6 +47,26 @@ export const BookForm = ({
 
   //   fetcher.submit(formData, { method, action });
   // };
+
+  if (isPendingAuthors || isPendingGenres) {
+    return <FormSkeleton />;
+  }
+
+  if (isErrorAuthors || isErrorGenres) {
+    return (
+      <p className="text-red-500">
+        Error al cargar datos necesarios para el formulario.
+      </p>
+    );
+  }
+
+  if (!authors?.succeeded || !genres?.succeeded) {
+    return (
+      <p className="text-red-500">
+        No se pudieron obtener los autores o géneros.
+      </p>
+    );
+  }
 
   return (
     <fetcher.Form
@@ -55,27 +90,45 @@ export const BookForm = ({
             defaultValue={book?.title}
           />
         </FormRow>
+
         <FormRow id="author" label="Autor">
-          <Select options={authorOptions} id="author-select" />
-          <p className="text-xs text-indigo-600 dark:text-indigo-200">
-            Si es un nuevo autor, ingresa el nombre en el campo de abajo.
-          </p>
-          <Input
-            id="author"
-            placeholder="Ingresar un nuevo autor"
-            defaultValue={book?.author}
-          />
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="checkbox"
+              id="isNewAuthor"
+              checked={isNewAuthor}
+              onChange={(e) => setIsNewAuthor(e.target.checked)}
+            />
+            <label htmlFor="isNewAuthor" className="text-xs dark:text-gray-300">
+              Crear nuevo autor
+            </label>
+          </div>
+
+          {isNewAuthor ? (
+            <Input id="new_author_name" placeholder="Nombre del nuevo autor" />
+          ) : (
+            <Select options={authors.data} id="author-select" />
+          )}
         </FormRow>
+
         <FormRow id="genre" label="Género">
-          <Select options={genreOptions} id="genre-select" />
-          <p className="text-xs text-indigo-600 dark:text-indigo-200">
-            Si es un nuevo género, ingresa el nombre en el campo de abajo.
-          </p>
-          <Input
-            id="genre"
-            placeholder="Ingresar un nuevo género"
-            defaultValue={book?.genre}
-          />
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="checkbox"
+              id="isNewGenre"
+              checked={isNewGenre}
+              onChange={(e) => setIsNewGenre(e.target.checked)}
+            />
+            <label htmlFor="isNewGenre" className="text-xs dark:text-gray-300">
+              Crear nuevo género
+            </label>
+          </div>
+
+          {isNewGenre ? (
+            <Input id="new_genre_name" placeholder="Nombre del nuevo género" />
+          ) : (
+            <Select options={genres.data} id="genre-select" />
+          )}
         </FormRow>
         <FormRow id="copies" label="Copias disponibles">
           <Input

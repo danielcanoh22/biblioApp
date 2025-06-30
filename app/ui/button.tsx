@@ -8,19 +8,20 @@ type VariantButton = "primary" | "destructive";
 type ButtonProps = {
   type?: TypeButton;
   variant?: VariantButton;
+  isDisabled?: boolean;
   onClick?: () => void;
   children: ReactNode;
 };
 
 export const Button = ({
   type = "button",
-
+  isDisabled = false,
   variant = "primary",
   onClick,
   children,
 }: ButtonProps) => {
   const baseStyles =
-    "flex justify-center items-center text-white py-2 px-3 rounded-md w-full cursor-pointer transition-colors duration-200";
+    "flex justify-center items-center text-white py-2 px-3 rounded-md w-full cursor-pointer transition-colors duration-200 disabled:bg-gray-400 dark:disabled:bg-gray-700";
 
   const variantStyles = {
     primary: `${baseStyles} bg-indigo-600 hover:bg-indigo-800`,
@@ -28,7 +29,12 @@ export const Button = ({
   };
 
   return (
-    <button className={variantStyles[variant]} type={type} onClick={onClick}>
+    <button
+      className={variantStyles[variant]}
+      type={type}
+      disabled={isDisabled}
+      onClick={onClick}
+    >
       {children}
     </button>
   );

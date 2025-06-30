@@ -5,8 +5,9 @@ export async function allBooksLoader(args: ClientLoaderFunctionArgs) {
   const url = new URL(args.request.url);
   const author = url.searchParams.get("autor_id") || "";
   const genre = url.searchParams.get("genero_id") || "";
+  const page = url.searchParams.get("page") || "";
 
-  const result = await getBooks({ author, genre });
+  const result = await getBooks({ author, genre, page });
 
   return result;
 }

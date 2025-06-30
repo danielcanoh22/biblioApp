@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import type { Route } from "./+types/books-management";
-import type { Book } from "~/types/types";
+import type { Book, Pagination } from "~/types/types";
 import { allBooksLoader } from "~/utils/loaders";
 import { createBook } from "~/services/apiBooks";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import { PrimaryTitle } from "~/ui/titles";
 import { Container } from "~/ui/container";
 import { Message } from "~/ui/message";
 import { Form, redirect } from "react-router";
+import { PaginationControls } from "~/ui/pagination-controls";
 
 const DEFAULT_SELECT_OPTION = {
   author: "Seleccionar un autor",
@@ -68,6 +69,13 @@ const BOOKS_TABLE_COLUMNS = [
   { key: "available_copies", label: "Copias" },
 ];
 
+const DEFAULT_PAGINATION = {
+  currentPage: 1,
+  totalPages: 1,
+  totalItems: 1,
+  limit: 1,
+};
+
 export default function BooksManagement({ loaderData }: Route.ComponentProps) {
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -77,13 +85,18 @@ export default function BooksManagement({ loaderData }: Route.ComponentProps) {
     return <Message variant="warning" text={`ERROR: ${result.message}`} />;
 
   const books: Book[] = "data" in result ? result.data.books : [];
+  const pagination: Pagination =
+    "data" in result ? result.data.pagination : DEFAULT_PAGINATION;
 
   return (
     <Container>
       <PrimaryTitle text="Gestionar Libros" />
 
-      <div className="w-max mb-4">
-        <Button onClick={() => setShowAddForm(true)}>+ Agregar libro</Button>
+      <div className="mb-4 flex justify-between">
+        <div className="w-max">
+          <Button onClick={() => setShowAddForm(true)}>+ Agregar libro</Button>
+        </div>
+        <PaginationControls pagination={pagination} />
       </div>
 
       <Modal isOpen={showAddForm} onClose={() => setShowAddForm(false)}>

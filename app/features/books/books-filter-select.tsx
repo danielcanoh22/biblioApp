@@ -16,12 +16,18 @@ export const BooksFilterSelect = ({
   paramName,
 }: BooksFilterSelectProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  // const field =
+  //   paramName === FILTERS.AUTHOR
+  //     ? searchParams.get(FILTERS.AUTHOR) || ""
+  //     : searchParams.get(FILTERS.GENRE) || "";
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
 
-    if (value.length > 0) searchParams.set(paramName, value);
-    else searchParams.delete(paramName);
+    if (value.length > 0) {
+      searchParams.set(paramName, value);
+      searchParams.delete("page");
+    } else searchParams.delete(paramName);
 
     setSearchParams(searchParams);
   };
@@ -29,6 +35,7 @@ export const BooksFilterSelect = ({
   return (
     <select
       className="border-b border-gray-300 text-sm p-1 cursor-pointer dark:text-gray-300"
+      title={`Filtrar por ${paramName}`}
       defaultValue={
         paramName === FILTERS.AUTHOR
           ? searchParams.get(FILTERS.AUTHOR) || ""
@@ -36,14 +43,15 @@ export const BooksFilterSelect = ({
       }
       onChange={handleChange}
     >
+      <option value="">Seleccionar un valor...</option>
       {options.map((option) => (
         <option
-          key={option.value}
-          value={option.value}
-          label={option.label}
+          key={option.id}
+          value={option.id}
+          data-author={option.name}
           className="dark:bg-dark"
         >
-          {option.label}
+          {option.name}
         </option>
       ))}
     </select>
