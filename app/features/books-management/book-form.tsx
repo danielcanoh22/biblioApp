@@ -1,4 +1,6 @@
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { useFetcher } from "react-router";
+import { useEffect, useRef, useState } from "react";
 import type { Book } from "~/types/types";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { FormRow } from "~/ui/form-row";
@@ -6,13 +8,24 @@ import { Input } from "~/ui/input";
 import { Select } from "~/ui/select";
 import { useAuthors } from "../books/hooks/useAuthors";
 import { useGenres } from "../books/hooks/useGenres";
-import { useState } from "react";
 import { FormSkeleton } from "~/ui/form-skeleton";
 
 type BookFormProps = {
   book?: Book;
   action?: string;
   onCancel: () => void;
+};
+
+export type BookFormValues = {
+  title: string;
+  description: string;
+  image: string;
+  total_copies: number;
+  available_copies?: number;
+  author_id?: string;
+  new_author_name?: string;
+  genre_id?: string;
+  new_genre_name?: string;
 };
 
 const DEFAULT_ACTION = "/admin/libros";
@@ -23,6 +36,14 @@ export const BookForm = ({
   onCancel: onClose,
 }: BookFormProps) => {
   const fetcher = useFetcher();
+  const isEditMode = Boolean(book);
+
+  const [isNewAuthor, setIsNewAuthor] = useState(
+    isEditMode ? !book?.author_id : false
+  );
+  const [isNewGenre, setIsNewGenre] = useState(
+    isEditMode ? !book?.genre_id : false
+  );
 
   const {
     authors,
@@ -35,18 +56,74 @@ export const BookForm = ({
     isError: isErrorGenres,
   } = useGenres();
 
-  const [isNewAuthor, setIsNewAuthor] = useState(false);
-  const [isNewGenre, setIsNewGenre] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    setValue,
+  } = useForm<BookFormValues>({
+    defaultValues: {
+      title: book?.title ?? "",
+      description: book?.description ?? "",
+      image:
+        book?.image ??
+        "https://tse2.mm.bing.net/th/id/OIP.jzmqPLfT1iRpQuiU1leqWgHaLk?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
+      total_copies: book?.total_copies ?? undefined,
+      available_copies: book?.available_copies ?? undefined,
+      author_id: book?.author_id ? String(book.author_id) : "",
+      new_author_name: "",
+      genre_id: book?.genre_id ? String(book.genre_id) : "",
+      new_genre_name: "",
+    },
 
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
+    mode: "onBlur",
+  });
 
-  //   const formData = new FormData(event.currentTarget);
+  // TODO: Refactorizar para no utilizar useEffect
 
-  //   const method = book ? "patch" : "post";
+  const isMounted = useRef(false);
 
-  //   fetcher.submit(formData, { method, action });
-  // };
+  useEffect(() => {
+    if (isMounted.current) {
+      setValue("author_id", "");
+      setValue("new_author_name", "");
+    }
+  }, [isNewAuthor, setValue]);
+
+  useEffect(() => {
+    if (isMounted.current) {
+      setValue("genre_id", "");
+      setValue("new_genre_name", "");
+    }
+  }, [isNewGenre, setValue]);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data && !fetcher.data.errors) {
+      if (!isEditMode) reset();
+      onClose();
+    }
+  }, [fetcher.state, fetcher.data, isEditMode, reset, onClose]);
+
+  const onSubmit: SubmitHandler<BookFormValues> = (data) => {
+    const method = isEditMode ? "PATCH" : "POST";
+
+    const payload = { ...data };
+
+    if (!isNewAuthor) delete payload.new_author_name;
+    if (isNewAuthor) delete payload.author_id;
+    if (!isNewGenre) delete payload.new_genre_name;
+    if (isNewGenre) delete payload.genre_id;
+
+    fetcher.submit(payload, { method, action });
+  };
 
   if (isPendingAuthors || isPendingGenres) {
     return <FormSkeleton />;
@@ -70,81 +147,168 @@ export const BookForm = ({
 
   return (
     <fetcher.Form
-      action={action}
       method="post"
+      onSubmit={handleSubmit(onSubmit)}
       className="mt-4 flex flex-col gap-6 sm:w-96 h-[75vh] overflow-y-auto"
-      // onSubmit={handleSubmit}
     >
       <div className="flex flex-col gap-3">
-        <FormRow id="image" label="Imagen">
+        <FormRow id="image" label="Imagen" error={errors.image?.message}>
           <Input
             id="image"
             placeholder="Ingresa la portada del libro"
-            defaultValue={book?.image}
+            {...register("image", {
+              required: "La URL de la imagen es obligatoria.",
+            })}
+            disabled={isSubmitting}
           />
         </FormRow>
-        <FormRow id="title" label="Título">
+        <FormRow id="title" label="Título" error={errors.title?.message}>
           <Input
             id="title"
             placeholder="Ingresa el título del libro"
-            defaultValue={book?.title}
+            {...register("title", {
+              required: "El título es obligatorio.",
+            })}
+            disabled={isSubmitting}
           />
         </FormRow>
 
-        <FormRow id="author" label="Autor">
+        <FormRow
+          id="author"
+          label="Autor"
+          error={errors.author_id?.message || errors.new_author_name?.message}
+        >
           <div className="flex items-center gap-2 mb-2">
             <input
               type="checkbox"
-              id="isNewAuthor"
+              id="isNewAuthorCheckbox"
               checked={isNewAuthor}
-              onChange={(e) => setIsNewAuthor(e.target.checked)}
+              onChange={() => setIsNewAuthor(!isNewAuthor)}
             />
-            <label htmlFor="isNewAuthor" className="text-xs dark:text-gray-300">
+            <label htmlFor="isNewAuthorCheckbox" className="dark:text-gray-300">
               Crear nuevo autor
             </label>
           </div>
-
           {isNewAuthor ? (
-            <Input id="new_author_name" placeholder="Nombre del nuevo autor" />
+            <Input
+              id="new_author_name"
+              disabled={isSubmitting}
+              {...register("new_author_name", {
+                required: isNewAuthor
+                  ? "Debes ingresar un nombre para el nuevo autor."
+                  : false,
+                minLength: {
+                  value: 2,
+                  message: "Debe tener al menos 2 caracteres.",
+                },
+              })}
+            />
           ) : (
-            <Select options={authors.data} id="author-select" />
+            <Select
+              options={authors.data}
+              id="author_id"
+              disabled={isSubmitting}
+              {...register("author_id", {
+                required: !isNewAuthor
+                  ? "Debes seleccionar un autor de la lista."
+                  : false,
+              })}
+            />
           )}
         </FormRow>
-
-        <FormRow id="genre" label="Género">
+        <FormRow
+          id="genre"
+          label="Género"
+          error={errors.genre_id?.message || errors.new_genre_name?.message}
+        >
           <div className="flex items-center gap-2 mb-2">
             <input
               type="checkbox"
-              id="isNewGenre"
+              id="isNewGenreCheckbox"
               checked={isNewGenre}
-              onChange={(e) => setIsNewGenre(e.target.checked)}
+              onChange={() => setIsNewGenre(!isNewGenre)}
             />
-            <label htmlFor="isNewGenre" className="text-xs dark:text-gray-300">
-              Crear nuevo género
+            <label htmlFor="isNewGenreCheckbox" className="dark:text-gray-300">
+              Crear nuevo autor
             </label>
           </div>
-
           {isNewGenre ? (
-            <Input id="new_genre_name" placeholder="Nombre del nuevo género" />
+            <Input
+              id="new_genre_name"
+              disabled={isSubmitting}
+              {...register("new_genre_name", {
+                required: isNewGenre
+                  ? "Debes ingresar un nombre para el nuevo género."
+                  : false,
+                minLength: {
+                  value: 2,
+                  message: "Debe tener al menos 2 caracteres.",
+                },
+              })}
+            />
           ) : (
-            <Select options={genres.data} id="genre-select" />
+            <Select
+              options={genres.data}
+              id="genre_id"
+              disabled={isSubmitting}
+              {...register("genre_id", {
+                required: !isNewGenre
+                  ? "Debes seleccionar un género de la lista."
+                  : false,
+              })}
+            />
           )}
         </FormRow>
-        <FormRow id="copies" label="Copias disponibles">
+
+        {book ? (
+          <FormRow
+            id="total_copies"
+            label="Copias totales"
+            error={errors.total_copies?.message}
+          >
+            <Input
+              type="number"
+              id="total_copies"
+              placeholder="Ingresa las copias totales"
+              {...register("total_copies", {
+                required: "El total de copias es obligatorio.",
+                valueAsNumber: true,
+                min: { value: 1, message: "Debe haber al menos 1 copia." },
+              })}
+              disabled={isSubmitting}
+            />
+          </FormRow>
+        ) : null}
+        <FormRow
+          id="available_copies"
+          label="Copias disponibles"
+          error={errors.available_copies?.message}
+        >
           <Input
             type="number"
-            id="copies"
+            id="available_copies"
             placeholder="Ingresa las copias disponibles"
-            value={book?.available_copies}
+            {...register("available_copies", {
+              required: "El valor de copias disponibles es obligatorio.",
+              valueAsNumber: true,
+              min: { value: 1, message: "Debe haber al menos 1 copia." },
+            })}
+            disabled={isSubmitting}
           />
         </FormRow>
-        <FormRow id="description" label="Descripción">
+        <FormRow
+          id="description"
+          label="Descripción"
+          error={errors.description?.message}
+        >
           <textarea
             id="description"
-            name="description"
             rows={5}
             className="border border-gray-300 py-1 px-2 rounded-md text-gray-600 resize-none focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-indigo-300  dark:text-gray-300 read-only:cursor-not-allowed"
-            defaultValue={book?.description}
+            {...register("description", {
+              required: "La descripción es obligatoria.",
+            })}
+            disabled={isSubmitting}
           />
         </FormRow>
       </div>

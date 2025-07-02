@@ -2,8 +2,8 @@ import { useSearchParams } from "react-router";
 import type { BookFilterOption } from "~/types/types";
 
 const enum FILTERS {
-  AUTHOR = "autor",
-  GENRE = "genero",
+  AUTHOR = "autor_id",
+  GENRE = "genero_id",
 }
 
 type BooksFilterSelectProps = {
@@ -16,16 +16,12 @@ export const BooksFilterSelect = ({
   paramName,
 }: BooksFilterSelectProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  // const field =
-  //   paramName === FILTERS.AUTHOR
-  //     ? searchParams.get(FILTERS.AUTHOR) || ""
-  //     : searchParams.get(FILTERS.GENRE) || "";
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+    const selectedId = e.target.value;
 
-    if (value.length > 0) {
-      searchParams.set(paramName, value);
+    if (selectedId.length > 0) {
+      searchParams.set(paramName, selectedId);
       searchParams.delete("page");
     } else searchParams.delete(paramName);
 

@@ -1,10 +1,12 @@
 export type Book = {
   id?: number;
   title: string;
-  author: string;
-  genre: string;
+  author?: string;
+  author_id?: number | string;
+  genre?: string;
+  genre_id?: number | string;
   description: string;
-  total_copies: number;
+  total_copies?: number;
   available_copies: number;
   image: string;
   created_at?: string;

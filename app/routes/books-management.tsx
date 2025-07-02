@@ -12,53 +12,39 @@ import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
 import { Container } from "~/ui/container";
 import { Message } from "~/ui/message";
-import { Form, redirect } from "react-router";
+import { Form } from "react-router";
 import { PaginationControls } from "~/ui/pagination-controls";
-
-const DEFAULT_SELECT_OPTION = {
-  author: "Seleccionar un autor",
-  genre: "Seleccionar un género",
-};
+import { createBookApiSchema } from "~/schemas/book";
 
 export const clientLoader = allBooksLoader;
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
+  const submissionData = Object.fromEntries(formData.entries());
 
-  const formAuthor =
-    String(formData.get("author")) || String(formData.get("author-select"));
-  const author = formAuthor === DEFAULT_SELECT_OPTION.author ? "" : formAuthor;
+  if (submissionData.total_copies) {
+    submissionData.total_copies = submissionData.available_copies;
+  }
 
-  const formGenre =
-    String(formData.get("genre")) || String(formData.get("genre-select"));
-  const genre = formGenre === DEFAULT_SELECT_OPTION.genre ? "" : formGenre;
+  const validationResult = createBookApiSchema.safeParse(submissionData);
 
-  const copies = Number(formData.get("copies"));
+  if (!validationResult.success) {
+    toast.error("Por favor, corrige los errores del formulario.");
+    return { errors: validationResult.error.flatten().fieldErrors };
+  }
 
-  const newBook = {
-    author,
-    genre,
-    title: String(formData.get("title")),
-    total_copies: copies,
-    available_copies: copies,
-    description: String(formData.get("description")),
-    image:
-      "https://http2.mlstatic.com/D_NQ_NP_818687-MLU77433974018_072024-O.webp",
-  };
+  const cleanData = validationResult.data;
 
-  console.log(newBook);
+  const result = await createBook(cleanData);
 
-  const result = await createBook(newBook);
+  if (!result?.succeeded) {
+    toast.error(result.message);
+    return null;
+  }
 
-  // if (!result?.succeeded) {
-  //   toast.error(result.message);
-  //   return null;
-  // }
+  toast.success("Libro agregado correctamente 😄");
 
-  // toast.success("Libro agregado correctamente 😄");
-
-  // return redirect("/admin/libros");
-  return null;
+  return result;
 }
 
 const BOOKS_TABLE_COLUMNS = [

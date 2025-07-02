@@ -6,8 +6,6 @@ import { deleteBook } from "~/services/apiBooks";
 export async function clientAction({ params }: Route.ClientActionArgs) {
   const result = await deleteBook(params.bookId);
 
-  console.log(params.bookId);
-
   if (!result?.succeeded) {
     toast.error(result.message);
     return null;

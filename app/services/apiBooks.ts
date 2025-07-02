@@ -1,4 +1,8 @@
 import type {
+  CreateBookApiPayload,
+  UpdateBookApiPayload,
+} from "~/schemas/book";
+import type {
   Book,
   BookAPIResponse,
   APIError,
@@ -58,7 +62,7 @@ export async function getBookById(
   }
 }
 
-export async function createBook(data: Book) {
+export async function createBook(data: CreateBookApiPayload) {
   try {
     const response = await fetch(BASE_URL, {
       method: "POST",
@@ -80,7 +84,7 @@ export async function createBook(data: Book) {
   }
 }
 
-export async function updateBook(id: string, newData: Book) {
+export async function updateBook(id: string, newData: UpdateBookApiPayload) {
   try {
     const response = await fetch(`${BASE_URL}/${id}`, {
       method: "PATCH",

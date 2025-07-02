@@ -29,7 +29,7 @@ export const BooksFilter = () => {
           ) : isErrorAuthors || !authors?.succeeded ? (
             <span className="text-red-500 text-xs">Error al cargar</span>
           ) : (
-            <BooksFilterSelect options={authors.data} paramName="author" />
+            <BooksFilterSelect options={authors.data} paramName="autor_id" />
           )}
         </div>
 
@@ -40,7 +40,7 @@ export const BooksFilter = () => {
           ) : isErrorGenres || !genres?.succeeded ? (
             <span className="text-red-500 text-xs">Error al cargar</span>
           ) : (
-            <BooksFilterSelect options={genres.data} paramName="genre" />
+            <BooksFilterSelect options={genres.data} paramName="genero_id" />
           )}
         </div>
       </div>
