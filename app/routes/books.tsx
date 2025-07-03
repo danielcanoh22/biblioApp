@@ -2,7 +2,6 @@ import type { Route } from "./+types/books";
 import { useSearchParams } from "react-router";
 
 import type { Book } from "~/types/types";
-import { getBooks } from "~/services/apiBooks";
 
 import { SearchBar } from "~/ui/search-bar";
 import { BooksList } from "~/features/books/books-list";
@@ -59,7 +58,10 @@ export default function Books({ loaderData }: Route.ComponentProps) {
       <PrimaryTitle text="Libros disponibles" />
       {hasBooks ? (
         <>
-          <SearchBar />
+          <SearchBar
+            field="titulo"
+            placeholder="Ingresa el nombre de un libro"
+          />
           <BooksFilter />
           {totalBooks > 0 ? (
             <>

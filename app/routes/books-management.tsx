@@ -33,9 +33,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
     return { errors: validationResult.error.flatten().fieldErrors };
   }
 
-  const cleanData = validationResult.data;
-
-  const result = await createBook(cleanData);
+  const result = await createBook(validationResult.data);
 
   if (!result?.succeeded) {
     toast.error(result.message);

@@ -1,39 +1,35 @@
 import { useState } from "react";
-import type { Loan } from "~/types/types";
 import { LoanList } from "~/features/loans/loan-list";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { Modal } from "~/ui/modal";
 import { PrimaryTitle } from "~/ui/titles";
 import { Container } from "~/ui/container";
+import { useFetcher, type ClientLoaderFunctionArgs } from "react-router";
+import { getLoans } from "~/services/apiLoans";
+import type { Route } from "./+types/loans";
+import { Message } from "~/ui/message";
+import { LOAN_STATUS, type Loan } from "~/types/loans";
 
-const loansData = [
-  {
-    id: "abcXzFG123",
-    bookTitle: "Harry Potter",
-    userName: "Daniel",
-    userEmail: "daniel@test.com",
-    status: "pendiente",
-    loanDate: new Date().toISOString(),
-  },
-  {
-    id: "abcXzFG456",
-    bookTitle: "Escrito en el Agua",
-    userName: "Daniel",
-    userEmail: "daniel@test.com",
-    status: "activo",
-    loanDate: new Date().toISOString(),
-  },
-  {
-    id: "abcXzFG789",
-    bookTitle: "El Principito",
-    userName: "Daniel",
-    userEmail: "daniel@test.com",
-    status: "devuelto",
-    loanDate: new Date().toISOString(),
-  },
-];
+export async function clientLoader(args: ClientLoaderFunctionArgs) {
+  // Obtener información del usuario
+  const data = await getLoans({ user_email: "daniel.canoh22@gmail.com" });
 
-export default function Loans() {
+  return data;
+}
+
+export default function Loans({ loaderData }: Route.ComponentProps) {
+  const loans = loaderData;
+
+  if (!loans.succeeded)
+    return (
+      <Message
+        variant="warning"
+        text="Ha ocurrido un error al obtener la información de los préstamos"
+      />
+    );
+
+  const fetcher = useFetcher();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
 
@@ -47,26 +43,46 @@ export default function Loans() {
     setSelectedLoan(null);
   };
 
+  const loansData = loans.data.loans.filter(
+    (loan) => loan.status !== LOAN_STATUS.RETURNED
+  );
+
   return (
     <Container>
       <PrimaryTitle text="Préstamos" />
-      <LoanList loans={loansData} onCancel={openModal} />
 
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <p className="mb-4 text-center">
-          ¿Deseas cancelar el préstamo del libro{" "}
-          <span className="font-semibold italic">
-            {selectedLoan?.bookTitle}
-          </span>
-          ?
-        </p>
+      {loansData.length < 1 ? (
+        <Message variant="info" text="Aún no haz realizado ningún préstamo" />
+      ) : (
+        <>
+          <LoanList loans={loansData} onCancel={openModal} />
 
-        <ConfirmActions
-          cancelText="Cerrar"
-          onCancel={closeModal}
-          onConfirm={() => {}}
-        />
-      </Modal>
+          <Modal isOpen={isModalOpen} onClose={closeModal}>
+            <p className="mb-4 text-center">
+              ¿Deseas cancelar el préstamo del libro{" "}
+              <span className="font-semibold italic">
+                {selectedLoan?.book_title}
+              </span>
+              ?
+            </p>
+
+            <ConfirmActions
+              cancelText="Cerrar"
+              onCancel={closeModal}
+              onConfirm={() => {
+                if (!selectedLoan) return;
+
+                fetcher.submit(null, {
+                  method: "DELETE",
+                  action: `/prestamos/${selectedLoan.id}/eliminar`,
+                });
+
+                closeModal();
+              }}
+            />
+          </Modal>
+        </>
+      )}
     </Container>
   );
 }

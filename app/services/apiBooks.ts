@@ -13,15 +13,17 @@ const BASE_URL = "http://localhost:3000/books";
 
 export async function getBooks({
   page,
+  limit = 8,
   author,
   genre,
 }: {
   page?: string;
+  limit?: string | number;
   author?: string;
   genre?: string;
 }): Promise<BooksAPIResponse | APIError> {
   try {
-    const ENDPOINT = new URL(BASE_URL + "?limit=10");
+    const ENDPOINT = new URL(`${BASE_URL}?limit=${limit}`);
 
     if (page) ENDPOINT.searchParams.append("page", String(page));
     if (author) ENDPOINT.searchParams.append("author", author);

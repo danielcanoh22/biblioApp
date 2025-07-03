@@ -1,4 +1,4 @@
-import type { Loan } from "~/types/types";
+import type { Loan } from "~/types/loans";
 import { LoanItem } from "./loan-item";
 
 type LoansListProps = {

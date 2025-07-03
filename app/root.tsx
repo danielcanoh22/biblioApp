@@ -28,7 +28,14 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-const queryClient = new QueryClient();
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "Librería Michi, +200 libros disponibles para prestar" },
+    { name: "description", content: "Welcome to React Router!" },
+  ];
+}
+
+export const queryClient = new QueryClient();
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

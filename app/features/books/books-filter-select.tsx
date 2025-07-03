@@ -39,7 +39,7 @@ export const BooksFilterSelect = ({
       }
       onChange={handleChange}
     >
-      <option value="">Seleccionar un valor...</option>
+      <option value="" className="dark:bg-dark">Seleccionar un valor...</option>
       {options.map((option) => (
         <option
           key={option.id}

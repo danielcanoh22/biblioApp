@@ -55,7 +55,7 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
           <MenuLink to="/admin/libros" text="Gestionar Libros">
             <BookLock size={20} className="text-indigo-500" />
           </MenuLink>
-          <MenuLink to="/admin/prestamos" text="Gestionar Préstamos">
+          <MenuLink to="/admin/prestamos" text="Préstamos Activos">
             <BookDown size={20} className="text-indigo-500" />
           </MenuLink>
           <MenuLink to="/admin/usuarios" text="Gestionar Usuarios">
