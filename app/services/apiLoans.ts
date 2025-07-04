@@ -7,7 +7,7 @@ import type {
 } from "~/types/loans";
 import type { APIError } from "~/types/types";
 
-const BASE_URL = "http://localhost:3000/loans";
+const BASE_URL = "http://localhost:3000/api/loans";
 
 export async function createLoan(data: CreateLoanApiDTO) {
   try {
@@ -17,6 +17,7 @@ export async function createLoan(data: CreateLoanApiDTO) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+      credentials: "include",
     });
 
     if (!response.ok)
@@ -51,7 +52,7 @@ export async function getLoans({
     if (user_email) ENDPOINT.searchParams.append("user_email", user_email);
     if (status) ENDPOINT.searchParams.append("status", status);
 
-    const response = await fetch(ENDPOINT);
+    const response = await fetch(ENDPOINT, { credentials: "include" });
 
     if (!response.ok)
       throw new Error("No se encontró ninguna solicitud de préstamo");
@@ -72,7 +73,9 @@ export async function getLoanById(
   id: string | number
 ): Promise<LoanAPIResponse | APIError> {
   try {
-    const response = await fetch(`${BASE_URL}/${id}`);
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      credentials: "include",
+    });
 
     if (!response.ok)
       throw new Error("No se encontró ninguna solicitud de préstamo");
@@ -100,6 +103,7 @@ export async function updateLoanStatus(
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+      credentials: "include",
     });
 
     const responseData: UpdateLoanStatusAPIResponse = await response.json();
@@ -124,6 +128,7 @@ export async function deleteLoan(id: string | number) {
   try {
     const response = await fetch(`${BASE_URL}/${id}`, {
       method: "DELETE",
+      credentials: "include",
     });
 
     if (!response.ok)

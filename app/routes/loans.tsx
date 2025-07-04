@@ -9,10 +9,18 @@ import { getLoans } from "~/services/apiLoans";
 import type { Route } from "./+types/loans";
 import { Message } from "~/ui/message";
 import { LOAN_STATUS, type Loan } from "~/types/loans";
+import { getProfile } from "~/services/apiAuth";
+import toast from "react-hot-toast";
 
-export async function clientLoader(args: ClientLoaderFunctionArgs) {
-  // Obtener información del usuario
-  const data = await getLoans({ user_email: "daniel.canoh22@gmail.com" });
+export async function clientLoader() {
+  const session = await getProfile();
+
+  if (!session.succeeded) {
+    toast.error("Error al obtener información del usuario activo");
+    return null;
+  }
+
+  const data = await getLoans({ user_email: session.data.user.email });
 
   return data;
 }
@@ -20,7 +28,7 @@ export async function clientLoader(args: ClientLoaderFunctionArgs) {
 export default function Loans({ loaderData }: Route.ComponentProps) {
   const loans = loaderData;
 
-  if (!loans.succeeded)
+  if (!loans || !loans?.succeeded)
     return (
       <Message
         variant="warning"

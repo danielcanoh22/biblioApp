@@ -11,7 +11,7 @@ export type Loan = {
   id: number;
   loan_date: string;
   due_date: string;
-  status: "activo" | "devuelto" | "pendiente" | "rechazado";
+  status: LOAN_STATUS;
   user_id?: number;
   user_name: string;
   user_email: string;

@@ -1,26 +1,33 @@
 import type { Route } from "./+types/loan-form";
-import { Form, redirect, useFetcher } from "react-router";
-
+import { redirect, useFetcher } from "react-router";
 import { getBookById } from "~/services/apiBooks";
 import { useMoveBack } from "~/hooks/useMoveBack";
 import { Button } from "~/ui/button";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
 import { Message } from "~/ui/message";
-
 import { Container } from "~/ui/container";
-import type { Book } from "~/types/types";
 import { ButtonBack } from "~/ui/button-back";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { LoanFormValues } from "~/types/loans";
 import { createLoan } from "~/services/apiLoans";
 import { createLoanApiSchema } from "~/schemas/loan";
 import toast from "react-hot-toast";
+import { getProfile } from "~/services/apiAuth";
+import { getUserById } from "~/services/apiUsers";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-  // Falta obtener los datos del usuario
-  const result = await getBookById(params.bookId);
-  return result;
+  const session = await getProfile();
+
+  if (!session.succeeded) {
+    toast.error("Error al obtener la información del usuario activo");
+    return null;
+  }
+
+  const userData = await getUserById(String(session.data.user.id));
+  const book = await getBookById(params.bookId);
+
+  return { book, userData };
 }
 
 export async function clientAction({ request }: Route.ClientActionArgs) {
@@ -53,7 +60,7 @@ export default function LoanForm({
   const moveBack = useMoveBack();
   const result = loaderData;
 
-  if (!result.succeeded)
+  if (!result || !result?.book.succeeded || !result?.userData.succeeded)
     return (
       <div className="flex flex-col gap-4">
         <ButtonBack />
@@ -66,7 +73,8 @@ export default function LoanForm({
 
   const fetcher = useFetcher();
 
-  const book = result.data;
+  const book = result.book.data;
+  const user = result.userData.data;
 
   const {
     register,
@@ -74,8 +82,8 @@ export default function LoanForm({
     formState: { errors },
   } = useForm<LoanFormValues>({
     defaultValues: {
-      user_name: "Daniel",
-      user_email: "daniel.canoh22@gmail.com",
+      user_name: user?.name,
+      user_email: user?.email,
       book_id: book?.id,
       book_title: book?.title,
     },
