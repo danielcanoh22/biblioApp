@@ -10,6 +10,8 @@ import {
 import { ButtonMenu } from "./button-menu";
 import { MenuLink } from "./menu-link";
 import { Logo } from "./logo";
+import { useAuth } from "~/context/AuthContext";
+import { USER_ROLE } from "~/types/users";
 
 type MenuProps = {
   isOpen?: boolean;
@@ -17,6 +19,8 @@ type MenuProps = {
 };
 
 export const Menu = ({ isOpen, onClose }: MenuProps) => {
+  const { user } = useAuth();
+
   return (
     <>
       {isOpen && (
@@ -48,18 +52,23 @@ export const Menu = ({ isOpen, onClose }: MenuProps) => {
           <MenuLink to="/prestamos" text="Prestamos">
             <LucideNotebookPen size={20} className="text-indigo-500" />
           </MenuLink>
-          <MenuLink to="/admin/solicitudes" text="Solicitudes">
-            <BookUser size={20} className="text-indigo-500" />
-          </MenuLink>
-          <MenuLink to="/admin/libros" text="Gestionar Libros">
-            <BookLock size={20} className="text-indigo-500" />
-          </MenuLink>
-          <MenuLink to="/admin/prestamos" text="Préstamos Activos">
-            <BookDown size={20} className="text-indigo-500" />
-          </MenuLink>
-          <MenuLink to="/admin/usuarios" text="Gestionar Usuarios">
-            <User size={20} className="text-indigo-500" />
-          </MenuLink>
+
+          {user?.role === USER_ROLE.ADMIN && (
+            <>
+              <MenuLink to="/admin/solicitudes" text="Solicitudes">
+                <BookUser size={20} className="text-indigo-500" />
+              </MenuLink>
+              <MenuLink to="/admin/libros" text="Gestionar Libros">
+                <BookLock size={20} className="text-indigo-500" />
+              </MenuLink>
+              <MenuLink to="/admin/prestamos" text="Préstamos Activos">
+                <BookDown size={20} className="text-indigo-500" />
+              </MenuLink>
+              <MenuLink to="/admin/usuarios" text="Gestionar Usuarios">
+                <User size={20} className="text-indigo-500" />
+              </MenuLink>
+            </>
+          )}
         </div>
       </nav>
     </>

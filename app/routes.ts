@@ -24,23 +24,25 @@ export default [
         route(":loanId/eliminar", "routes/loan-delete.tsx"),
       ]),
 
-      ...prefix("admin", [
-        ...prefix("solicitudes", [
-          index("routes/requests.tsx"),
-          route(":requestId", "routes/request.tsx"),
-        ]),
-        route("prestamos", "routes/loans-management.tsx"),
+      layout("routes/admin-route.tsx", [
+        ...prefix("admin", [
+          ...prefix("solicitudes", [
+            index("routes/requests.tsx"),
+            route(":requestId", "routes/request.tsx"),
+          ]),
+          route("prestamos", "routes/loans-management.tsx"),
 
-        ...prefix("usuarios", [
-          index("routes/users.tsx"),
-          route(":userId/editar", "routes/user-edit.tsx"),
-          route(":userId/eliminar", "routes/user-delete.tsx"),
-        ]),
+          ...prefix("usuarios", [
+            index("routes/users.tsx"),
+            route(":userId/editar", "routes/user-edit.tsx"),
+            route(":userId/eliminar", "routes/user-delete.tsx"),
+          ]),
 
-        ...prefix("libros", [
-          index("routes/books-management.tsx"),
-          route(":bookId/editar", "routes/book-edit.tsx"),
-          route(":bookId/eliminar", "routes/book-delete.tsx"),
+          ...prefix("libros", [
+            index("routes/books-management.tsx"),
+            route(":bookId/editar", "routes/book-edit.tsx"),
+            route(":bookId/eliminar", "routes/book-delete.tsx"),
+          ]),
         ]),
       ]),
     ]),
