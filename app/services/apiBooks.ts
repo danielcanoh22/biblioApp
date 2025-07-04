@@ -2,32 +2,31 @@ import type {
   CreateBookApiPayload,
   UpdateBookApiPayload,
 } from "~/schemas/book";
-import type {
-  Book,
-  BookAPIResponse,
-  APIError,
-  BooksAPIResponse,
-} from "~/types/types";
+import type { BookAPIResponse, BooksAPIResponse } from "~/types/books";
+import type { APIError } from "~/types/globals";
 
 const BASE_URL = "http://localhost:3000/api/books";
 
 export async function getBooks({
   page,
   limit = 8,
-  author,
-  genre,
+  author_id,
+  genre_id,
+  title,
 }: {
-  page?: string;
-  limit?: string | number;
-  author?: string;
-  genre?: string;
+  page?: number;
+  limit?: number;
+  author_id?: string;
+  genre_id?: string;
+  title?: string;
 }): Promise<BooksAPIResponse | APIError> {
   try {
     const ENDPOINT = new URL(`${BASE_URL}?limit=${limit}`);
 
     if (page) ENDPOINT.searchParams.append("page", String(page));
-    if (author) ENDPOINT.searchParams.append("author", author);
-    if (genre) ENDPOINT.searchParams.append("genre", genre);
+    if (author_id) ENDPOINT.searchParams.append("author", author_id);
+    if (genre_id) ENDPOINT.searchParams.append("genre", genre_id);
+    if (title) ENDPOINT.searchParams.append("title", title);
 
     const response = await fetch(ENDPOINT, {
       credentials: "include",
@@ -120,6 +119,8 @@ export async function deleteBook(id: string) {
       method: "DELETE",
       credentials: "include",
     });
+
+    console.log("REsponse: ", response);
 
     if (!response.ok)
       throw new Error(`Error al eliminar el libro: ${response.statusText}`);

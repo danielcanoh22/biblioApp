@@ -8,6 +8,7 @@ export async function clientAction({ params }: Route.ClientActionArgs) {
 
   if (!result?.succeeded) {
     toast.error(result.message);
+    redirect("/prestamos");
     return null;
   }
 

@@ -1,5 +1,5 @@
 import type { GenresAPIResponse } from "~/types/genres";
-import type { APIError } from "~/types/types";
+import type { APIError } from "~/types/globals";
 
 const BASE_URL = "http://localhost:3000/api/genres";
 

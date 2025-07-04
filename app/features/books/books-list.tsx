@@ -1,4 +1,4 @@
-import type { Book } from "~/types/types";
+import type { Book } from "~/types/globals";
 import { BookCard } from "./book-item";
 
 type BooksProps = {

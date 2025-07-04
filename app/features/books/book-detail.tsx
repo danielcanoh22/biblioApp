@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router";
 import { useState } from "react";
-
-import type { Book } from "~/types/types";
+import type { Book } from "~/types/books";
 import { ButtonBack } from "~/ui/button-back";
 import { Button } from "~/ui/button";
 import { Message } from "~/ui/message";

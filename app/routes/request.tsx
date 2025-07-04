@@ -1,22 +1,26 @@
 import type { ClientLoaderFunctionArgs } from "react-router";
-import { RequestDetail } from "~/features/requests/request-detail";
 import { getLoanById } from "~/services/apiLoans";
+import type { Route } from "./+types/request";
+import { RequestDetail } from "~/features/requests/request-detail";
 import { ButtonBack } from "~/ui/button-back";
 import { Container } from "~/ui/container";
 import { PrimaryTitle } from "~/ui/titles";
-import type { Route } from "./+types/request";
 import { Message } from "~/ui/message";
 
 export async function clientLoader(args: ClientLoaderFunctionArgs) {
   const result = await getLoanById(args.params?.requestId || "");
 
+  if (!result.succeeded) {
+    return null;
+  }
+
   return result;
 }
 
 export default function Request({ loaderData }: Route.ComponentProps) {
-  const loanData = loaderData;
+  const result = loaderData;
 
-  if (!loanData.succeeded)
+  if ((result && !result.succeeded) || !result)
     return (
       <Message
         variant="warning"
@@ -24,13 +28,15 @@ export default function Request({ loaderData }: Route.ComponentProps) {
       />
     );
 
+  const loanData = result.data;
+
   return (
     <Container>
       <div className="flex items-center justify-between">
         <PrimaryTitle text="Detalles de la Solicitud" />
         <ButtonBack />
       </div>
-      <RequestDetail loan={loanData.data} />
+      <RequestDetail loan={loanData} />
     </Container>
   );
 }

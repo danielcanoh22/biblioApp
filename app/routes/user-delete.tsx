@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { redirect } from "react-router";
-import type { Route } from "./+types/user-delete";
 import { deleteUser } from "~/services/apiUsers";
+import type { Route } from "./+types/user-delete";
 
 export async function clientAction({ params }: Route.ClientActionArgs) {
   const result = await deleteUser(params.userId);

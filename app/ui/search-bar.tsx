@@ -1,5 +1,4 @@
 import { LucideSearch } from "lucide-react";
-import React from "react";
 import { Form, useSearchParams } from "react-router";
 import { Button } from "./button";
 

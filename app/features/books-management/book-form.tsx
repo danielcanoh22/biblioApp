@@ -1,13 +1,13 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useFetcher } from "react-router";
 import { useEffect, useRef, useState } from "react";
-import type { Book } from "~/types/types";
+import { useAuthors } from "../books/hooks/useAuthors";
+import { useGenres } from "../books/hooks/useGenres";
+import type { Book } from "~/types/globals";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
 import { Select } from "~/ui/select";
-import { useAuthors } from "../books/hooks/useAuthors";
-import { useGenres } from "../books/hooks/useGenres";
 import { FormSkeleton } from "~/ui/form-skeleton";
 
 type BookFormProps = {

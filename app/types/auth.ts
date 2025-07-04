@@ -1,15 +1,5 @@
-export enum USER_ROLE {
-  ADMIN = "admin",
-  USER = "user",
-}
-
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: USER_ROLE;
-  created_at?: string;
-};
+import type { User } from "./users";
+import type { USER_ROLE } from "./users";
 
 export type RegisterData = {
   name: string;

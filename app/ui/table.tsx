@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import type { Column } from "~/types/types";
+import type { Column } from "~/types/globals";
 import { TableHeader } from "./table-header";
 import { TableRow } from "./table-row";
 

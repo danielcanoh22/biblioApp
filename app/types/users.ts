@@ -1,4 +1,4 @@
-import type { Pagination } from "./types";
+import type { Pagination } from "./globals";
 
 export enum USER_ROLE {
   ADMIN = "admin",

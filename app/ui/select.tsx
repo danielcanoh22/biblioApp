@@ -1,6 +1,6 @@
 import type React from "react";
 import { forwardRef } from "react";
-import type { BookFilterOption } from "~/types/types";
+import type { BookFilterOption } from "~/types/books";
 
 type SelectProps = React.ComponentPropsWithoutRef<"select"> & {
   options: BookFilterOption[];

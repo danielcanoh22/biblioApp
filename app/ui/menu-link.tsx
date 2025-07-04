@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
 import { NavLink } from "react-router";
+import type { ReactNode } from "react";
 
 type MenuLinkProps = {
   to: string;

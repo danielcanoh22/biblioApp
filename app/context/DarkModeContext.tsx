@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { THEMES } from "~/types/types";
+import { THEMES } from "~/types/globals";
 
 type DarkModeContextType = {
   theme: string;

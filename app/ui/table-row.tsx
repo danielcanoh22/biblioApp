@@ -1,5 +1,5 @@
-import type { Column } from "~/types/types";
 import type { JSX } from "react";
+import type { Column } from "~/types/globals";
 
 type TableRowProps<T> = {
   row: T;

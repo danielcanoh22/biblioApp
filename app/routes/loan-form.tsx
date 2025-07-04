@@ -1,20 +1,20 @@
-import type { Route } from "./+types/loan-form";
+import toast from "react-hot-toast";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { redirect, useFetcher } from "react-router";
+import { createLoan } from "~/services/apiLoans";
+import { getProfile } from "~/services/apiAuth";
+import { getUserById } from "~/services/apiUsers";
 import { getBookById } from "~/services/apiBooks";
 import { useMoveBack } from "~/hooks/useMoveBack";
+import type { Route } from "./+types/loan-form";
+import type { LoanFormValues } from "~/types/loans";
+import { createLoanApiSchema } from "~/schemas/loan";
 import { Button } from "~/ui/button";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
 import { Message } from "~/ui/message";
 import { Container } from "~/ui/container";
-import { ButtonBack } from "~/ui/button-back";
-import { useForm, type SubmitHandler } from "react-hook-form";
-import type { LoanFormValues } from "~/types/loans";
-import { createLoan } from "~/services/apiLoans";
-import { createLoanApiSchema } from "~/schemas/loan";
-import toast from "react-hot-toast";
-import { getProfile } from "~/services/apiAuth";
-import { getUserById } from "~/services/apiUsers";
+import { ButtonHome } from "~/ui/button-home";
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {
   const session = await getProfile();
@@ -53,17 +53,14 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
   return redirect("/prestamos");
 }
 
-export default function LoanForm({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function LoanForm({ loaderData }: Route.ComponentProps) {
   const moveBack = useMoveBack();
   const result = loaderData;
 
   if (!result || !result?.book.succeeded || !result?.userData.succeeded)
     return (
       <div className="flex flex-col gap-4">
-        <ButtonBack />
+        <ButtonHome />
         <Message
           variant="warning"
           text="Ha ocurrido un error al obtener la información del usuario o del libro"
@@ -167,8 +164,6 @@ export default function LoanForm({
           <Button type="submit">Confirmar</Button>
         </div>
       </fetcher.Form>
-
-      {JSON.stringify(actionData)}
     </Container>
   );
 }

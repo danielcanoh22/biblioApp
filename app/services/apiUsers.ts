@@ -1,5 +1,5 @@
 import type { UpdateUsersApiPayload } from "~/schemas/user";
-import type { APIError } from "~/types/types";
+import type { APIError } from "~/types/globals";
 import type { UserAPIResponse, UsersAPIResponse } from "~/types/users";
 
 const BASE_URL = "http://localhost:3000/api/users";

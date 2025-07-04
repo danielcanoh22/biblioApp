@@ -1,6 +1,6 @@
+import type { Pagination } from "~/types/globals";
 import { useSearchParams } from "react-router";
 import { Button } from "./button";
-import type { Pagination } from "~/types/types";
 
 type PaginationProps = {
   pagination: Pagination;

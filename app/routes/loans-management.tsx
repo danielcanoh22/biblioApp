@@ -1,20 +1,20 @@
 import toast from "react-hot-toast";
-import { useState } from "react";
 import { useNavigate, type ClientLoaderFunctionArgs } from "react-router";
+import { useState } from "react";
+import { getLoans, updateLoanStatus } from "~/services/apiLoans";
+import type { Route } from "./+types/loans-management";
 import type { Loan } from "~/types/loans";
+import { LOAN_STATUS } from "~/types/loans";
+import { DEFAULT_PAGINATION } from "~/utils/constants/constants";
+import { getLoansQuerySchema } from "~/schemas/loan";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { Container } from "~/ui/container";
 import { Modal } from "~/ui/modal";
 import { Table } from "~/ui/table";
 import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
-import type { Route } from "./+types/loans-management";
-import { getLoans, updateLoanStatus } from "~/services/apiLoans";
-import { LOAN_STATUS } from "~/types/loans";
 import { Message } from "~/ui/message";
-import { SearchBar } from "~/ui/search-bar";
-import { PaginationControls } from "~/ui/pagination-controls";
-import { getLoansQuerySchema } from "~/schemas/loan";
+import { FiltersToolbar } from "~/ui/filters-toolbar";
 
 const columns = [
   { key: "loan_date", label: "Fecha" },
@@ -28,8 +28,14 @@ export async function clientLoader(args: ClientLoaderFunctionArgs) {
   const url = new URL(args.request.url);
   const queryParams = Object.fromEntries(url.searchParams.entries());
 
-  const validatedParams = getLoansQuerySchema.parse(queryParams);
+  const validationResult = getLoansQuerySchema.safeParse(queryParams);
 
+  if (!validationResult.success) {
+    toast.error("El correo electrónico ingresado no es válido");
+    return null;
+  }
+
+  const validatedParams = validationResult.data;
   validatedParams.status = LOAN_STATUS.APPROVED;
 
   const data = await getLoans(validatedParams);
@@ -40,7 +46,7 @@ export async function clientLoader(args: ClientLoaderFunctionArgs) {
 export default function LoansManagement({ loaderData }: Route.ComponentProps) {
   const loans = loaderData;
 
-  if (!loans.succeeded)
+  if (loans && !loans.succeeded)
     return (
       <Message
         variant="warning"
@@ -80,26 +86,22 @@ export default function LoansManagement({ loaderData }: Route.ComponentProps) {
     }
   };
 
-  const loansData = loans.data.loans;
-  const pagination = loans.data.pagination;
+  const loansData = loans?.data.loans || [];
+  const pagination = loans?.data.pagination || DEFAULT_PAGINATION;
 
   return (
     <Container>
       <PrimaryTitle text="Gestionar Préstamos" />
+      <FiltersToolbar
+        fieldName="user_email"
+        placeholder="Correo electrónico del usuario..."
+        pagination={pagination}
+      />
 
       {loansData.length < 1 ? (
         <Message variant="info" text="No hay ningún préstamo activo" />
       ) : (
         <>
-          <div className="mb-6 flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-center">
-            <SearchBar
-              field="user_email"
-              placeholder="Correo electrónico del usuario..."
-            />
-            <div className="lg:justify-self-end lg:w-max">
-              <PaginationControls pagination={pagination} />
-            </div>
-          </div>
           <Container>
             <Modal isOpen={showCheckinBook} onClose={handleCloseCheckinBook}>
               <p className="mb-6 text-center">

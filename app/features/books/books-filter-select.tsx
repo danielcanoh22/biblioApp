@@ -1,9 +1,9 @@
 import { useSearchParams } from "react-router";
-import type { BookFilterOption } from "~/types/types";
+import type { BookFilterOption } from "~/types/books";
 
 const enum FILTERS {
-  AUTHOR = "autor_id",
-  GENRE = "genero_id",
+  AUTHOR = "author_id",
+  GENRE = "genre_id",
 }
 
 type BooksFilterSelectProps = {
@@ -39,7 +39,9 @@ export const BooksFilterSelect = ({
       }
       onChange={handleChange}
     >
-      <option value="" className="dark:bg-dark">Seleccionar un valor...</option>
+      <option value="" className="dark:bg-dark">
+        Seleccionar un valor...
+      </option>
       {options.map((option) => (
         <option
           key={option.id}

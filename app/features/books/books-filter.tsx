@@ -1,7 +1,7 @@
-import { SelectSkeleton } from "~/ui/select-skeleton";
-import { BooksFilterSelect } from "./books-filter-select";
 import { useAuthors } from "./hooks/useAuthors";
 import { useGenres } from "./hooks/useGenres";
+import { SelectSkeleton } from "~/ui/select-skeleton";
+import { BooksFilterSelect } from "./books-filter-select";
 
 export const BooksFilter = () => {
   const {
@@ -29,7 +29,7 @@ export const BooksFilter = () => {
           ) : isErrorAuthors || !authors?.succeeded ? (
             <span className="text-red-500 text-xs">Error al cargar</span>
           ) : (
-            <BooksFilterSelect options={authors.data} paramName="autor_id" />
+            <BooksFilterSelect options={authors.data} paramName="author_id" />
           )}
         </div>
 
@@ -40,7 +40,7 @@ export const BooksFilter = () => {
           ) : isErrorGenres || !genres?.succeeded ? (
             <span className="text-red-500 text-xs">Error al cargar</span>
           ) : (
-            <BooksFilterSelect options={genres.data} paramName="genero_id" />
+            <BooksFilterSelect options={genres.data} paramName="genre_id" />
           )}
         </div>
       </div>

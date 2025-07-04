@@ -1,4 +1,4 @@
-import type { Column } from "~/types/types";
+import type { Column } from "~/types/globals";
 
 type TableHeaderProps = {
   columns: Column[];

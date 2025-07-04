@@ -1,21 +1,21 @@
 import toast from "react-hot-toast";
-import {
-  redirect,
-  useNavigate,
-  type ClientLoaderFunctionArgs,
-} from "react-router";
+import { redirect, type ClientLoaderFunctionArgs } from "react-router";
+import { getUserById, updateUser } from "~/services/apiUsers";
 import type { Route } from "./+types/user-edit";
+import { updateUserSchema } from "~/schemas/user";
+import { UserForm } from "~/features/users/user-form";
 import { Container } from "~/ui/container";
 import { PrimaryTitle } from "~/ui/titles";
 import { Message } from "~/ui/message";
 import { ButtonBack } from "~/ui/button-back";
-import { UserForm } from "~/features/users/user-form";
-import { getUserById, updateUser } from "~/services/apiUsers";
-import { updateUserSchema } from "~/schemas/user";
+import { useMoveBack } from "~/hooks/useMoveBack";
 
 export async function clientLoader(args: ClientLoaderFunctionArgs) {
   const result = await getUserById(args.params?.userId || "");
-  console.log("Usuario pa editar: ", result);
+
+  if (!result.succeeded) {
+    return null;
+  }
 
   return result;
 }
@@ -46,27 +46,20 @@ export async function clientAction({
 }
 
 export default function UserEdit({ loaderData }: Route.ComponentProps) {
-  const navigate = useNavigate();
   const result = loaderData;
 
-  console.log("Editar: ", result);
-
-  if (!result.succeeded)
+  if ((result && !result.succeeded) || !result)
     return (
       <div className="flex flex-col gap-4">
         <ButtonBack />
-
-        <Message variant="warning" text={`ERROR: ${result.message}`} />
+        <Message
+          variant="warning"
+          text="No se encontró el usuario seleccionado"
+        />
       </div>
     );
-
+  const moveBack = useMoveBack();
   const user = result.data;
-
-  const handleCancelEdit = () => {
-    navigate(-1);
-  };
-
-  console.log(user);
 
   return (
     <Container>
@@ -80,7 +73,7 @@ export default function UserEdit({ loaderData }: Route.ComponentProps) {
       <UserForm
         user={user}
         action={`/admin/usuarios/${user?.id}/editar`}
-        onCancel={handleCancelEdit}
+        onCancel={moveBack}
       />
     </Container>
   );

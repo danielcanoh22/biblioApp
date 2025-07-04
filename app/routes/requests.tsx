@@ -1,16 +1,17 @@
+import toast from "react-hot-toast";
 import { LucideEye } from "lucide-react";
 import { type ClientLoaderFunctionArgs } from "react-router";
+import { getLoans } from "~/services/apiLoans";
 import type { Route } from "./+types/requests";
 import type { Loan } from "~/types/loans";
 import { getLoansQuerySchema } from "~/schemas/loan";
-import { getLoans } from "~/services/apiLoans";
+import { DEFAULT_PAGINATION } from "~/utils/constants/constants";
 import { Container } from "~/ui/container";
 import { Table } from "~/ui/table";
 import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
 import { Message } from "~/ui/message";
-import { SearchBar } from "~/ui/search-bar";
-import { PaginationControls } from "~/ui/pagination-controls";
+import { FiltersToolbar } from "~/ui/filters-toolbar";
 
 const columns = [
   { key: "loan_date", label: "Fecha" },
@@ -24,7 +25,14 @@ export async function clientLoader(args: ClientLoaderFunctionArgs) {
   const url = new URL(args.request.url);
   const queryParams = Object.fromEntries(url.searchParams.entries());
 
-  const validatedParams = getLoansQuerySchema.parse(queryParams);
+  const validationResult = getLoansQuerySchema.safeParse(queryParams);
+
+  if (!validationResult.success) {
+    toast.error("El correo electrónico ingresado no es válido");
+    return null;
+  }
+
+  const validatedParams = validationResult.data;
 
   const data = await getLoans(validatedParams);
 
@@ -32,9 +40,9 @@ export async function clientLoader(args: ClientLoaderFunctionArgs) {
 }
 
 export default function Requests({ loaderData }: Route.ComponentProps) {
-  const loans = loaderData;
+  const result = loaderData;
 
-  if (!loans.succeeded)
+  if ((result && !result.succeeded) || !result)
     return (
       <Message
         variant="warning"
@@ -42,38 +50,38 @@ export default function Requests({ loaderData }: Route.ComponentProps) {
       />
     );
 
-  const dataForTable = loans.data.loans;
-  const pagination = loans.data.pagination;
+  const dataForTable = result.data.loans || [];
+  const pagination = result.data.pagination || DEFAULT_PAGINATION;
 
   return (
     <Container>
       <PrimaryTitle text="Gestionar Solicitudes" />
-
-      <div className="mb-6 flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-center">
-        <SearchBar
-          field="user_email"
-          placeholder="Correo electrónico del usuario..."
-        />
-        <div className="lg:justify-self-end lg:w-max">
-          <PaginationControls pagination={pagination} />
-        </div>
-      </div>
-      <Table
-        columns={columns}
-        data={dataForTable}
-        actions={(request: Loan) =>
-          request.status === "pendiente" ? (
-            <TableActionButton url={String(request.id)}>
-              <LucideEye />
-              <span className="ml-2">Ver detalles</span>
-            </TableActionButton>
-          ) : (
-            <span className="bg-indigo-200 text-indigo-800 px-2 rounded-full font-medium">
-              Registrado
-            </span>
-          )
-        }
+      <FiltersToolbar
+        fieldName="user_email"
+        placeholder="Correo electrónico del usuario..."
+        pagination={pagination}
       />
+
+      {dataForTable.length < 1 ? (
+        <Message variant="info" text="No hay ninguna solicitud de préstamo" />
+      ) : (
+        <Table
+          columns={columns}
+          data={dataForTable}
+          actions={(request: Loan) =>
+            request.status === "pendiente" ? (
+              <TableActionButton url={String(request.id)}>
+                <LucideEye />
+                <span className="ml-2">Ver detalles</span>
+              </TableActionButton>
+            ) : (
+              <span className="bg-indigo-200 text-indigo-800 px-2 rounded-full font-medium">
+                Registrado
+              </span>
+            )
+          }
+        />
+      )}
     </Container>
   );
 }

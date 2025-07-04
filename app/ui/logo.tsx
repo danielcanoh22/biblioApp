@@ -1,5 +1,5 @@
 import { useDarkMode } from "~/context/DarkModeContext";
-import { THEMES } from "~/types/types";
+import { THEMES } from "~/types/globals";
 
 export const Logo = () => {
   const { theme } = useDarkMode();

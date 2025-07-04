@@ -1,16 +1,16 @@
+import toast from "react-hot-toast";
+import { useFetcher } from "react-router";
 import { useState } from "react";
+import { getLoans } from "~/services/apiLoans";
+import { getProfile } from "~/services/apiAuth";
+import type { Route } from "./+types/loans";
+import { LOAN_STATUS, type Loan } from "~/types/loans";
 import { LoanList } from "~/features/loans/loan-list";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { Modal } from "~/ui/modal";
 import { PrimaryTitle } from "~/ui/titles";
 import { Container } from "~/ui/container";
-import { useFetcher, type ClientLoaderFunctionArgs } from "react-router";
-import { getLoans } from "~/services/apiLoans";
-import type { Route } from "./+types/loans";
 import { Message } from "~/ui/message";
-import { LOAN_STATUS, type Loan } from "~/types/loans";
-import { getProfile } from "~/services/apiAuth";
-import toast from "react-hot-toast";
 
 export async function clientLoader() {
   const session = await getProfile();

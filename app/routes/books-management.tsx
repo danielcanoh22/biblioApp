@@ -1,9 +1,12 @@
 import toast from "react-hot-toast";
-import type { Route } from "./+types/books-management";
-import type { Book, Pagination } from "~/types/types";
-import { allBooksLoader } from "~/utils/loaders";
-import { createBook } from "~/services/apiBooks";
+import { Form } from "react-router";
 import { useState } from "react";
+import { createBook } from "~/services/apiBooks";
+import type { Route } from "./+types/books-management";
+import type { Book } from "~/types/books";
+import { createBookApiSchema } from "~/schemas/book";
+import { allBooksLoader } from "~/utils/loaders/loaders";
+import { useFilteredBooks } from "~/features/books/hooks/useFilteredBooks";
 import { BookForm } from "~/features/books-management/book-form";
 import { Button } from "~/ui/button";
 import { Modal } from "~/ui/modal";
@@ -12,9 +15,7 @@ import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
 import { Container } from "~/ui/container";
 import { Message } from "~/ui/message";
-import { Form } from "react-router";
-import { PaginationControls } from "~/ui/pagination-controls";
-import { createBookApiSchema } from "~/schemas/book";
+import { FiltersToolbar } from "~/ui/filters-toolbar";
 
 export const clientLoader = allBooksLoader;
 
@@ -53,71 +54,80 @@ const BOOKS_TABLE_COLUMNS = [
   { key: "available_copies", label: "Copias" },
 ];
 
-const DEFAULT_PAGINATION = {
-  currentPage: 1,
-  totalPages: 1,
-  totalItems: 1,
-  limit: 1,
-};
-
 export default function BooksManagement({ loaderData }: Route.ComponentProps) {
   const [showAddForm, setShowAddForm] = useState(false);
 
   const result = loaderData;
 
-  if (!result.succeeded && !!result.message)
-    return <Message variant="warning" text={`ERROR: ${result.message}`} />;
+  if ((result && !result.succeeded) || !result)
+    return (
+      <Message
+        variant="warning"
+        text="Ha ocurrido un error al cargar los libros disponibles"
+      />
+    );
 
-  const books: Book[] = "data" in result ? result.data.books : [];
-  const pagination: Pagination =
-    "data" in result ? result.data.pagination : DEFAULT_PAGINATION;
+  const { books, pagination, hasBooks, totalBooks } = useFilteredBooks(
+    result.data.books,
+    result.data.pagination
+  );
 
   return (
     <Container>
       <PrimaryTitle text="Gestionar Libros" />
 
-      <div className="mb-4 flex justify-between">
-        <div className="w-max">
-          <Button onClick={() => setShowAddForm(true)}>+ Agregar libro</Button>
-        </div>
-        <PaginationControls pagination={pagination} />
+      <div className="w-max mb-6">
+        <Button onClick={() => setShowAddForm(true)}>+ Agregar libro</Button>
       </div>
+
+      <FiltersToolbar
+        fieldName="title"
+        placeholder="Ingresa el nombre de un libro"
+        pagination={pagination}
+      />
 
       <Modal isOpen={showAddForm} onClose={() => setShowAddForm(false)}>
         <h3 className="font-semibold text-center text-lg">Agregar Libro</h3>
         <BookForm onCancel={() => setShowAddForm(false)} />
       </Modal>
 
-      {books.length > 0 ? (
-        <Table
-          columns={BOOKS_TABLE_COLUMNS}
-          data={books}
-          actions={(book: Book) => (
-            <>
-              <TableActionButton url={`${book.id}/editar`}>
-                Editar
-              </TableActionButton>
-              <Form
-                action={`${book.id}/eliminar`}
-                method="post"
-                onSubmit={(event) => {
-                  const response = confirm(
-                    "Please confirm you want to delete this record."
-                  );
-                  if (!response) {
-                    event.preventDefault();
-                  }
-                }}
-              >
-                <TableActionButton type="submit">Eliminar</TableActionButton>
-              </Form>
-            </>
-          )}
-        />
+      {hasBooks ? (
+        totalBooks > 0 ? (
+          <Table
+            columns={BOOKS_TABLE_COLUMNS}
+            data={books}
+            actions={(book: Book) => (
+              <>
+                <TableActionButton url={`${book.id}/editar`}>
+                  Editar
+                </TableActionButton>
+                <Form
+                  action={`${book.id}/eliminar`}
+                  method="post"
+                  onSubmit={(event) => {
+                    const response = confirm(
+                      "Please confirm you want to delete this record."
+                    );
+                    if (!response) {
+                      event.preventDefault();
+                    }
+                  }}
+                >
+                  <TableActionButton type="submit">Eliminar</TableActionButton>
+                </Form>
+              </>
+            )}
+          />
+        ) : (
+          <Message
+            variant="info"
+            text="No hay ningún libro que coincida con los filtros de búsqueda"
+          />
+        )
       ) : (
         <Message
           variant="info"
-          text="En este momento no hay ningún libro registrado."
+          text="En este momento no hay ningún libro registrado"
         />
       )}
     </Container>

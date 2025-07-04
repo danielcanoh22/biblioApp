@@ -2,7 +2,7 @@ import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router";
 import { useState } from "react";
 import { useDarkMode } from "~/context/DarkModeContext";
-import { THEMES } from "~/types/types";
+import { THEMES } from "~/types/globals";
 import { Header } from "~/ui/header";
 import { Menu } from "~/ui/menu";
 

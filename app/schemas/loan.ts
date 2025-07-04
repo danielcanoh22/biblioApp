@@ -34,7 +34,5 @@ export const getLoansQuerySchema = z.object({
   status: z.nativeEnum(LOAN_STATUS).optional(),
 });
 
-export type GetLoansApiDTO = z.infer<typeof getLoansQuerySchema>;
-
 export type CreateLoanApiDTO = z.infer<typeof createLoanApiSchema>;
 export type UpdateLoanStatusApiDTO = z.infer<typeof updateLoanStatusApiSchema>;

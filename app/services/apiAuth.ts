@@ -6,7 +6,7 @@ import type {
   RegisterAPIResponse,
   RegisterData,
 } from "~/types/auth";
-import type { APIError } from "~/types/types";
+import type { APIError } from "~/types/globals";
 
 const BASE_URL = "http://localhost:3000/auth";
 // const API_PREFIX = "/api";

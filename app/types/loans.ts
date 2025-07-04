@@ -1,4 +1,4 @@
-import type { Pagination } from "./types";
+import type { Pagination } from "./globals";
 
 export enum LOAN_STATUS {
   RETURNED = "devuelto",

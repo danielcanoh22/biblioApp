@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { getProfile, logoutUser } from "~/services/apiAuth";
-import type { LoginData, User } from "~/types/auth";
+import type { User } from "~/types/users";
 
 type AuthProviderProps = {
   children: ReactNode;

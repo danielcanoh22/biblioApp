@@ -1,6 +1,6 @@
 import { LucideMoon, LucideSun } from "lucide-react";
 import { useDarkMode } from "~/context/DarkModeContext";
-import { THEMES } from "~/types/types";
+import { THEMES } from "~/types/globals";
 
 export const ButtonDarkMode = () => {
   const { theme, changeTheme } = useDarkMode();

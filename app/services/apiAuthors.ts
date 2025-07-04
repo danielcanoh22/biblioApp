@@ -1,5 +1,5 @@
 import type { AuthorsAPIResponse } from "~/types/authors";
-import type { APIError } from "~/types/types";
+import type { APIError } from "~/types/globals";
 
 const BASE_URL = "http://localhost:3000/api/authors";
 

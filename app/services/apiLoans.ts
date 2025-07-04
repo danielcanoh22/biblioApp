@@ -5,7 +5,7 @@ import type {
   LoansAPIResponse,
   UpdateLoanStatusAPIResponse,
 } from "~/types/loans";
-import type { APIError } from "~/types/types";
+import type { APIError } from "~/types/globals";
 
 const BASE_URL = "http://localhost:3000/api/loans";
 
@@ -53,6 +53,8 @@ export async function getLoans({
     if (status) ENDPOINT.searchParams.append("status", status);
 
     const response = await fetch(ENDPOINT, { credentials: "include" });
+
+    console.log("Response ", response);
 
     if (!response.ok)
       throw new Error("No se encontró ninguna solicitud de préstamo");

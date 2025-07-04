@@ -7,7 +7,6 @@ import {
   LucideX,
   User,
 } from "lucide-react";
-
 import { ButtonMenu } from "./button-menu";
 import { MenuLink } from "./menu-link";
 import { Logo } from "./logo";

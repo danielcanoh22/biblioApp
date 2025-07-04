@@ -1,7 +1,8 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useFetcher } from "react-router";
-import { USER_ROLE, type RegisterFormValues } from "~/types/auth";
+import type { RegisterFormValues } from "~/types/auth";
 import type { User } from "~/types/users";
+import { USER_ROLE } from "~/types/users";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";

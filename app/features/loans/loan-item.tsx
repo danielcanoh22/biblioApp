@@ -1,6 +1,5 @@
 import { LucideMail, LucideUser, LucideX } from "lucide-react";
 import type { Loan } from "~/types/loans";
-
 import { BadgeStatus } from "~/ui/badge-status";
 
 type LoanItemProps = {

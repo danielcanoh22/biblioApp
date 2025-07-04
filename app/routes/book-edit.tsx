@@ -1,14 +1,15 @@
 import toast from "react-hot-toast";
-import { redirect, useNavigate } from "react-router";
+import { redirect } from "react-router";
+import { updateBook } from "~/services/apiBooks";
 import type { Route } from "./+types/book-edit";
-import { bookLoader } from "~/utils/loaders";
+import { updateBookApiSchema } from "~/schemas/book";
+import { bookLoader } from "~/utils/loaders/loaders";
 import { BookForm } from "~/features/books-management/book-form";
 import { Container } from "~/ui/container";
 import { PrimaryTitle } from "~/ui/titles";
 import { Message } from "~/ui/message";
-import { ButtonBack } from "~/ui/button-back";
-import { updateBook } from "~/services/apiBooks";
-import { updateBookApiSchema } from "~/schemas/book";
+import { ButtonHome } from "~/ui/button-home";
+import { useMoveBack } from "~/hooks/useMoveBack";
 
 export const clientLoader = bookLoader;
 
@@ -41,23 +42,22 @@ export async function clientAction({
 }
 
 export default function BookEdit({ loaderData }: Route.ComponentProps) {
-  const navigate = useNavigate();
   const result = loaderData;
 
-  if (!result.succeeded)
+  if ((result && !result.succeeded) || !result) {
     return (
       <div className="flex flex-col gap-4">
-        <ButtonBack />
-
-        <Message variant="warning" text={`ERROR: ${result.message}`} />
+        <ButtonHome />
+        <Message
+          variant="warning"
+          text="No se encontró el libro seleccionado"
+        />
       </div>
     );
+  }
 
+  const moveBack = useMoveBack();
   const book = result.data;
-
-  const handleCancelEdit = () => {
-    navigate(-1);
-  };
 
   return (
     <Container>
@@ -66,7 +66,7 @@ export default function BookEdit({ loaderData }: Route.ComponentProps) {
       <BookForm
         book={book}
         action={`/admin/libros/${book?.id}/editar`}
-        onCancel={handleCancelEdit}
+        onCancel={moveBack}
       />
     </Container>
   );

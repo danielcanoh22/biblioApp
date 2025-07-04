@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { USER_ROLE } from "~/types/auth";
+import { USER_ROLE } from "~/types/users";
 
 export const registerSchema = z.object({
   name: z.string().min(1, "El nombre es obligatorio"),
