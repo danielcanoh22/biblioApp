@@ -1,149 +1,66 @@
 import type { CreateLoanApiDTO, UpdateLoanStatusApiDTO } from "~/schemas/loan";
 import type {
+  CreateLoanApiResponse,
   LOAN_STATUS,
   LoanAPIResponse,
   LoansAPIResponse,
-  UpdateLoanStatusAPIResponse,
 } from "~/types/loans";
-import type { APIError } from "~/types/globals";
+import { apiClient } from "./apiClient";
+import type { APIError, GeneralApiResponse } from "~/types/globals";
 
-const BASE_URL = "http://localhost:3000/api/loans";
+const BASE_URL = "/api/loans";
 
-export async function createLoan(data: CreateLoanApiDTO) {
-  try {
-    const response = await fetch(BASE_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      credentials: "include",
-    });
-
-    if (!response.ok)
-      throw new Error(
-        `Error al crear la solicitud de préstamo: ${response.statusText}`
-      );
-
-    return response.json();
-  } catch (error) {
-    return {
-      succeeded: false,
-      message: "No se pudo crear la solicitud de préstamo. Intente más tarde.",
-    };
-  }
-}
-
-export async function getLoans({
-  page = 1,
-  limit = 10,
-  user_email,
-  status,
-}: {
-  page?: string | number;
+interface LoansFilters {
+  page?: number;
   limit?: number;
   user_email?: string;
   status?: LOAN_STATUS;
-}): Promise<LoansAPIResponse | APIError> {
-  try {
-    const ENDPOINT = new URL(`${BASE_URL}?limit=${limit}`);
+}
 
-    if (page) ENDPOINT.searchParams.append("page", String(page));
-    if (user_email) ENDPOINT.searchParams.append("user_email", user_email);
-    if (status) ENDPOINT.searchParams.append("status", status);
+export async function createLoan(
+  data: CreateLoanApiDTO
+): Promise<CreateLoanApiResponse | APIError> {
+  return await apiClient(BASE_URL, {
+    method: "POST",
+    body: data,
+  });
+}
 
-    const response = await fetch(ENDPOINT, { credentials: "include" });
+export async function getLoans(
+  filters: LoansFilters = {}
+): Promise<LoansAPIResponse | APIError> {
+  const params = new URLSearchParams();
 
-    console.log("Response ", response);
+  if (filters.page) params.append("page", String(filters.page));
+  if (filters.limit) params.append("limit", String(filters.limit));
+  if (filters.user_email) params.append("user_email", filters.user_email);
+  if (filters.status) params.append("status", filters.status);
 
-    if (!response.ok)
-      throw new Error("No se encontró ninguna solicitud de préstamo");
+  const endpoint = `${BASE_URL}?${params.toString()}`;
 
-    const data: LoansAPIResponse = await response.json();
-
-    return data;
-  } catch (error) {
-    return {
-      succeeded: false,
-      message:
-        "No se pudo obtener las solicitudes de préstamo. Intente más tarde.",
-    };
-  }
+  return await apiClient(endpoint);
 }
 
 export async function getLoanById(
   id: string | number
 ): Promise<LoanAPIResponse | APIError> {
-  try {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      credentials: "include",
-    });
-
-    if (!response.ok)
-      throw new Error("No se encontró ninguna solicitud de préstamo");
-
-    const data: LoanAPIResponse = await response.json();
-
-    return data;
-  } catch (error) {
-    return {
-      succeeded: false,
-      message:
-        "No se pudo obtener los datos de la solicitud seleccionada. Intente más tarde.",
-    };
-  }
+  return await apiClient(`${BASE_URL}/${id}`);
 }
 
 export async function updateLoanStatus(
   id: string | number,
   data: UpdateLoanStatusApiDTO
-): Promise<UpdateLoanStatusAPIResponse | APIError> {
-  try {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      credentials: "include",
-    });
-
-    const responseData: UpdateLoanStatusAPIResponse = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        responseData.message || `Error del servidor: ${response.statusText}`
-      );
-    }
-
-    return responseData;
-  } catch (error) {
-    return {
-      succeeded: false,
-      message:
-        error instanceof Error ? error.message : "Ocurrió un error inesperado",
-    };
-  }
+): Promise<GeneralApiResponse | APIError> {
+  return await apiClient(`${BASE_URL}/${id}`, {
+    method: "PATCH",
+    body: data,
+  });
 }
 
-export async function deleteLoan(id: string | number) {
-  try {
-    const response = await fetch(`${BASE_URL}/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-
-    if (!response.ok)
-      throw new Error(
-        `Error al eliminar la solicitud de préstamo: ${response.statusText}`
-      );
-
-    return await response.json();
-  } catch (error) {
-    return {
-      succeeded: false,
-      message:
-        "No se pudo eliminar la solicitud de préstamo. Intente más tarde.",
-    };
-  }
+export async function deleteLoan(
+  id: string | number
+): Promise<GeneralApiResponse | APIError> {
+  return await apiClient(`${BASE_URL}/${id}`, {
+    method: "DELETE",
+  });
 }

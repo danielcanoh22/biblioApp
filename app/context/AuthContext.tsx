@@ -75,8 +75,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     initialState
   );
 
-  console.log(user);
-
   const handleLogin = async (user: User) => {
     dispatch({ type: ACTION_TYPE.LOGIN, payload: { user } });
   };

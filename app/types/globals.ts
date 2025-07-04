@@ -19,3 +19,8 @@ export interface APIError {
   succeeded: false;
   message: string;
 }
+
+export interface GeneralApiResponse {
+  message: string;
+  succeeded: boolean;
+}

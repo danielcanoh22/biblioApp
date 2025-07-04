@@ -36,8 +36,8 @@ export interface LoanAPIResponse {
   message?: null;
 }
 
-export interface UpdateLoanStatusAPIResponse {
-  message: string;
+export interface CreateLoanApiResponse {
+  data: Loan;
   succeeded: true;
 }
 

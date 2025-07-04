@@ -106,7 +106,7 @@ export default function BooksManagement({ loaderData }: Route.ComponentProps) {
                   method="post"
                   onSubmit={(event) => {
                     const response = confirm(
-                      "Please confirm you want to delete this record."
+                      `¿Seguro que desea eliminar el libro ${book.title}?`
                     );
                     if (!response) {
                       event.preventDefault();

@@ -30,11 +30,6 @@ export type GetProfileAPIResponse = {
   succeeded: boolean;
 };
 
-export type LogoutAPIResponse = {
-  message: string;
-  succeeded: boolean;
-};
-
 export type LoginFormValues = {
   email: string;
   password: string;

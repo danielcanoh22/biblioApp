@@ -35,3 +35,8 @@ export interface BookAPIResponse {
   errors?: null;
   message?: null;
 }
+
+export interface CreateBookApiResponse {
+  data: Book;
+  succeeded: true;
+}
