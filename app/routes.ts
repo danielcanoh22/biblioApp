@@ -28,7 +28,12 @@ export default [
         route(":requestId", "routes/request.tsx"),
       ]),
       route("prestamos", "routes/loans-management.tsx"),
-      route("usuarios", "routes/users.tsx"),
+
+      ...prefix("usuarios", [
+        index("routes/users.tsx"),
+        route(":userId/editar", "routes/user-edit.tsx"),
+        route(":userId/eliminar", "routes/user-delete.tsx"),
+      ]),
 
       ...prefix("libros", [
         index("routes/books-management.tsx"),

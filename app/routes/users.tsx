@@ -1,4 +1,3 @@
-import type { User } from "~/types/types";
 import { useState } from "react";
 
 import { Button } from "~/ui/button";
@@ -8,30 +7,71 @@ import { TableActionButton } from "~/ui/table-action-button";
 import { PrimaryTitle } from "~/ui/titles";
 import { UserForm } from "~/features/users/user-form";
 import { Container } from "~/ui/container";
-
-const users = [
-  {
-    id: "1234abc",
-    name: "Daniel",
-    email: "daniel@test.com",
-    rol: "admin",
-  },
-  {
-    id: "5678abc",
-    name: "Test",
-    email: "test@test.com",
-    rol: "usuario",
-  },
-];
+import type { Route } from "./+types/users";
+import { registerSchema } from "~/schemas/auth";
+import toast from "react-hot-toast";
+import { registerUser } from "~/services/apiAuth";
+import { Form, type ClientLoaderFunctionArgs } from "react-router";
+import { getUsersQuerySchema } from "~/schemas/user";
+import { getUsers } from "~/services/apiUsers";
+import { Message } from "~/ui/message";
+import type { User } from "~/types/users";
 
 const columns = [
   { key: "name", label: "Nombre" },
   { key: "email", label: "Email" },
-  { key: "rol", label: "Rol" },
+  { key: "role", label: "Rol" },
 ];
 
-export default function Users() {
+export async function clientAction({ request }: Route.ClientActionArgs) {
+  const formData = await request.formData();
+  const submissionData = Object.fromEntries(formData.entries());
+
+  const validationResult = registerSchema.safeParse(submissionData);
+
+  if (!validationResult.success) {
+    toast.error("Por favor, corrige los errores del formulario.");
+    return { errors: validationResult.error.flatten().fieldErrors };
+  }
+
+  const result = await registerUser(validationResult.data);
+
+  if (!result?.succeeded) {
+    toast.error(result.message);
+    return null;
+  }
+
+  toast.success("Usuario registrado correctamente 😄");
+
+  return null;
+}
+
+export async function clientLoader(args: ClientLoaderFunctionArgs) {
+  const url = new URL(args.request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+
+  const validatedParams = getUsersQuerySchema.parse(queryParams);
+
+  const data = await getUsers(validatedParams);
+
+  return data;
+}
+
+export default function Users({ loaderData }: Route.ComponentProps) {
+  const users = loaderData;
+
+  if (!users.succeeded)
+    return (
+      <Message
+        variant="warning"
+        text="Ha ocurrido un error al obtener los usuarios registrados"
+      />
+    );
+
   const [showAddUser, setShowAddUser] = useState(false);
+
+  const usersData = users.data.users;
+  const pagination = users.data.pagination;
 
   return (
     <Container>
@@ -43,19 +83,34 @@ export default function Users() {
 
       <Modal isOpen={showAddUser} onClose={() => setShowAddUser(false)}>
         <h3 className="font-semibold text-center text-lg">Agregar Usuario</h3>
-        <UserForm onClose={() => setShowAddUser(false)} />
+        <UserForm onCancel={() => setShowAddUser(false)} />
       </Modal>
 
       <Table
         columns={columns}
-        data={users}
-        actions={(book: User) => (
+        data={usersData}
+        actions={(user: User) => (
           <>
             <div>
-              <TableActionButton url={book.id}>Editar</TableActionButton>
+              <TableActionButton url={`${String(user.id)}/editar`}>
+                Editar
+              </TableActionButton>
             </div>
             <div>
-              <TableActionButton>Eliminar</TableActionButton>
+              <Form
+                action={`${user.id}/eliminar`}
+                method="post"
+                onSubmit={(event) => {
+                  const response = confirm(
+                    `¿Seguro que deseas eliminar al usuario ${user.name}?`
+                  );
+                  if (!response) {
+                    event.preventDefault();
+                  }
+                }}
+              >
+                <TableActionButton type="submit">Eliminar</TableActionButton>
+              </Form>
             </div>
           </>
         )}

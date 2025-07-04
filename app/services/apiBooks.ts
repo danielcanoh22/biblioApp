@@ -9,7 +9,7 @@ import type {
   BooksAPIResponse,
 } from "~/types/types";
 
-const BASE_URL = "http://localhost:3000/books";
+const BASE_URL = "http://localhost:3000/api/books";
 
 export async function getBooks({
   page,
@@ -29,7 +29,9 @@ export async function getBooks({
     if (author) ENDPOINT.searchParams.append("author", author);
     if (genre) ENDPOINT.searchParams.append("genre", genre);
 
-    const response = await fetch(ENDPOINT);
+    const response = await fetch(ENDPOINT, {
+      credentials: "include",
+    });
 
     if (!response.ok) throw new Error("No se encontró ningún libro.");
 
@@ -48,7 +50,9 @@ export async function getBookById(
   id: string
 ): Promise<BookAPIResponse | APIError> {
   try {
-    const response = await fetch(`${BASE_URL}/${id}`);
+    const response = await fetch(`${BASE_URL}/${id}`, {
+      credentials: "include",
+    });
 
     if (!response.ok) throw new Error("No se encontró ningún libro.");
 
@@ -72,12 +76,13 @@ export async function createBook(data: CreateBookApiPayload) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+      credentials: "include",
     });
 
     if (!response.ok)
       throw new Error(`Error al crear el libro: ${response.statusText}`);
 
-    return response.json();
+    return await response.json();
   } catch (error) {
     return {
       succeeded: false,
@@ -94,6 +99,7 @@ export async function updateBook(id: string, newData: UpdateBookApiPayload) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newData),
+      credentials: "include",
     });
 
     if (!response.ok)
@@ -112,6 +118,7 @@ export async function deleteBook(id: string) {
   try {
     const response = await fetch(`${BASE_URL}/${id}`, {
       method: "DELETE",
+      credentials: "include",
     });
 
     if (!response.ok)

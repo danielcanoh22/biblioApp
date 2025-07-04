@@ -1,11 +1,11 @@
 import type { GenresAPIResponse } from "~/types/genres";
 import type { APIError } from "~/types/types";
 
-const BASE_URL = "http://localhost:3000/genres";
+const BASE_URL = "http://localhost:3000/api/genres";
 
 export async function getGenres(): Promise<GenresAPIResponse | APIError> {
   try {
-    const response = await fetch(BASE_URL);
+    const response = await fetch(BASE_URL, { credentials: "include" });
 
     if (!response.ok) throw new Error("No se encontró ningún autor.");
 

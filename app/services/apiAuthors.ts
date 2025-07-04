@@ -1,11 +1,11 @@
 import type { AuthorsAPIResponse } from "~/types/authors";
 import type { APIError } from "~/types/types";
 
-const BASE_URL = "http://localhost:3000/authors";
+const BASE_URL = "http://localhost:3000/api/authors";
 
 export async function getAuthors(): Promise<AuthorsAPIResponse | APIError> {
   try {
-    const response = await fetch(BASE_URL);
+    const response = await fetch(BASE_URL, { credentials: "include" });
 
     if (!response.ok) throw new Error("No se encontró ningún autor.");
 
