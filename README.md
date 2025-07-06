@@ -1,100 +1,63 @@
-# Welcome to React Router!
+## BiblioApp Frontend
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Este repositorio contiene el código de la interfaz de usuario para el sistema de gestión de biblioteca. Es una SPA responsiva, construida utilizando React Router v7 como framework. La aplicación consume la [API del Backend](https://github.com/danielcanoh22/biblioApp-backend).
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+---
 
-## Features
+### 🚀 Tecnologías Utilizadas
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+Construcción de la interfaz de usuario:
 
-## Getting Started
+- 💙 React
+- 🎨 Tailwind CSS
 
-### Installation
+Desarrollo robusto y tipado estático
 
-Install the dependencies:
+- 🔰 TypeScript
+
+Enrutamiento
+
+- 🀄 React Router
+
+---
+
+### 🚀 Características Principales
+
+- **Interfaz Moderna y Responsiva**: Construida con React y estilizada con Tailwind CSS para una experiencia de usuario fluida.
+- **Enrutamiento Protegido por Roles**: Sistema de rutas anidadas que distingue entre:
+  - **Rutas Públicas**: Accesibles para todos.
+  - **Rutas Protegidas**: Solo para usuarios autenticados.
+  - **Rutas de Administrador**: Solo para usuarios con el rol `admin`.
+- **Notificaciones Dinámicas**: Feedback al usuario a través de notificaciones (toasts) con `React Hot Toast`.
+
+---
+
+### 🚀 Ejecución
+
+**Prerrequisito:** El [Backend de la App](https://github.com/danielcanoh22/biblioApp-backend) debe estar configurado y en ejecución.
+
+Para ejecutar el proyecto en local, seguir los siguientes pasos:
+
+1. Clonar el repositorio
+
+```bash
+git clone https://github.com/danielcanoh22/biblioApp.git
+```
+
+2. Navegar al directorio del proyecto
+
+```bash
+cd NombreDirectorio
+```
+
+3. Instalar las dependencias
 
 ```bash
 npm install
 ```
 
-### Development
-
-Start the development server with HMR:
+4. Iniciar el servidor de desarrollo
 
 ```bash
 npm run dev
 ```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-This template includes three Dockerfiles optimized for different package managers:
-
-- `Dockerfile` - for npm
-- `Dockerfile.pnpm` - for pnpm
-- `Dockerfile.bun` - for bun
-
-To build and run using Docker:
-
-```bash
-# For npm
-docker build -t my-app .
-
-# For pnpm
-docker build -f Dockerfile.pnpm -t my-app .
-
-# For bun
-docker build -f Dockerfile.bun -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
