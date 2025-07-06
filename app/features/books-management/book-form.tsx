@@ -3,7 +3,7 @@ import { useFetcher } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import { useAuthors } from "../books/hooks/useAuthors";
 import { useGenres } from "../books/hooks/useGenres";
-import type { Book } from "~/types/globals";
+import type { Book } from "~/types/books";
 import { ConfirmActions } from "~/ui/confirm-actions";
 import { FormRow } from "~/ui/form-row";
 import { Input } from "~/ui/input";
